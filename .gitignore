@@ -6,6 +6,8 @@ dist/
 playwright-report/
 test-results/
 .artifacts/
+.netlify/
+.sanity/
 *.log
 .DS_Store
 Thumbs.db

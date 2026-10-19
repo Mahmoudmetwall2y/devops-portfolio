@@ -1,5 +1,5 @@
 import { ArrowUpRight, Download, GraduationCap } from 'lucide-react';
-import { experience, resumeUrl } from '../data/profile';
+import { experience, resumeUrl, profile } from '../data/profile';
 import { ShellCommand } from './MotionElements';
 
 export default function Experience() {
@@ -10,6 +10,6 @@ export default function Experience() {
       <div className="experience-when"><span className="eyebrow">{item.period}</span>{item.current && <span className="current-role"><i /> CURRENT ROLE</span>}<span className="experience-index" aria-hidden="true">0{index + 1}</span></div>
       <div className="experience-body"><p className="eyebrow experience-role">{item.role}</p><h3>{item.company}<ArrowUpRight size={26} aria-hidden="true" /></h3><p className="experience-summary">{item.summary}</p><p>{item.details}</p><div className="tags">{item.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></div>
     </article>)}</div>
-    <div className="career-notes" data-reveal><article><GraduationCap size={26} strokeWidth={1.4} /><span className="eyebrow">ENGINEERING FOUNDATION / 2026</span><h3>Communication & Electronics</h3><p>Bachelor’s degree · BNS University, Bani Suef</p><span className="career-languages">ARABIC / NATIVE · ENGLISH / PROFICIENT</span></article><article><span className="leadership-number" aria-hidden="true">08</span><span className="eyebrow">TECHNICAL LEAD / ASCULTICOR</span><h3>Connecting devices, AI, and people.</h3><p>Led an eight-member team delivering an IoT and AI cardiac monitoring platform, with containerized services, secure device onboarding, and cloud infrastructure.</p><a className="text-link" href={resumeUrl} target="_blank" rel="noreferrer">More in my CV <ArrowUpRight size={16} /></a></article></div>
+    <div className="career-notes" data-reveal><article><GraduationCap size={26} strokeWidth={1.4} /><span className="eyebrow">ENGINEERING FOUNDATION / {profile.education.year}</span><h3>{profile.education.degree}</h3><p>{profile.education.university}</p><span className="career-languages">{profile.education.languages}</span></article><article><span className="leadership-number" aria-hidden="true">{profile.leadership.teamSize}</span><span className="eyebrow">{profile.leadership.eyebrow}</span><h3>{profile.leadership.title}</h3><p>{profile.leadership.description}</p><a className="text-link" href={resumeUrl} target="_blank" rel="noreferrer">More in my CV <ArrowUpRight size={16} /></a></article></div>
   </div></section>;
 }

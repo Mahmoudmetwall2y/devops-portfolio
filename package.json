@@ -11,6 +11,12 @@
     "typecheck": "tsc --noEmit",
     "lint": "npm run typecheck",
     "build": "tsc --noEmit && vite build",
+    "build:netlify": "npm run build && npm --prefix studio ci --include=dev && npm run cms:typecheck && npm run cms:build",
+    "cms:dev": "npm --prefix studio run dev",
+    "cms:build": "npm --prefix studio run build",
+    "cms:typecheck": "npm --prefix studio run typecheck",
+    "cms:login": "npm --prefix studio run login",
+    "cms:seed": "npm --prefix studio run import:seed",
     "preview": "vite preview",
     "test": "playwright test"
   },
@@ -26,11 +32,13 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
+    "@sanity/client": "^8.9.0",
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.2"
+    "vite": "^8.3.2",
+    "zod": "^4.6.7"
   }
 }

@@ -32,7 +32,7 @@
   .hero-name-line { display: block; white-space: nowrap; }
   .hero-name-line + .hero-name-line { margin-top: 7px; }
   .hero-letter-mask { display: inline-block; overflow: visible; clip-path: inset(0 -15px -10px -15px); }
-  .hero-letter { display: inline-block; will-change: transform; }
+  .hero-letter { display: inline-block; }
   .name-outline { -webkit-text-stroke: 1px #b8c0d1; color: transparent; letter-spacing: -.025em; }
   .hero-promise { font-size: 31px; letter-spacing: -.045em; font-weight: 500; line-height: 1.24; margin-top: 29px; }
   .hero-promise > span { color: var(--accent); }
@@ -160,7 +160,6 @@
   .about-copy > p { line-height: 1.95; }
   .about-copy > p.about-intro { font-size: 17px; }
   .about-image-mask { overflow: hidden; }
-  .about-portrait-image { will-change: transform; }
   .principles > div { padding-block: 13px; }
   .about-link { font-size: 12px; }
   .toolkit-section { padding-top: 80px; padding-bottom: 48px; }
@@ -203,9 +202,9 @@
   .project-foundation a { text-decoration: underline; text-underline-offset: 3px; }
   .project-foundation a > svg { display: inline; vertical-align: -2px; }
   .motion-cursor { position: fixed; z-index: 80; top: 0; left: 0; pointer-events: none; opacity: 0; transition: opacity .25s; }
-  .motion-cursor span { display: block; width: 27px; height: 27px; border: 1px solid #5473b0; border-radius: 50%; transform: translate(-50%, -50%); transition: width .3s, height .3s, background .3s; }
+  .motion-cursor span { display: block; width: 27px; height: 27px; border: 1px solid #5473b0; border-radius: 50%; transform: translate(-50%, -50%); transition: transform .3s, background .3s; }
   .cursor-visible { opacity: .8; }
-  .cursor-hover span { width: 46px; height: 46px; background: #81a1e010; }
+  .cursor-hover span { transform: translate(-50%, -50%) scale(1.7037); background: #81a1e010; }
 }
 
 @layer responsive {

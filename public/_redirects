@@ -1,0 +1,6 @@
+/projects/three-tier /projects/three-tier.html 200
+/projects/space-cargo /projects/space-cargo.html 200
+/projects/ultimate-devops /projects/ultimate-devops.html 200
+/projects/* /index.html 200
+/admin /admin/ 301
+/admin/* /admin/index.html 200

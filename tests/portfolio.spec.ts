@@ -174,8 +174,10 @@ test('copy email gives visitors a usable address and confirmation', async ({ pag
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('mahmoudmetwall2y@gmail.com');
 });
 
+for (const preference of ['reduce', 'no-preference'] as const) {
 for (const width of [320, 390, 768, 1440]) {
-  test(`layout and case study stay within a ${width}px viewport`, async ({ page }) => {
+  test(`layout and case study stay within a ${width}px viewport with ${preference}`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: preference });
     await page.setViewportSize({ width, height: 900 });
     await ready(page);
     const pageWidth = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
@@ -194,6 +196,7 @@ for (const width of [320, 390, 768, 1440]) {
     const innerOverflow = await dialog.evaluate((element) => element.scrollWidth - element.clientWidth);
     expect(innerOverflow).toBeLessThanOrEqual(1);
   });
+}
 }
 
 test('mobile navigation opens, closes on selection, and closes with Escape', async ({ page }) => {
@@ -263,31 +266,181 @@ test('search dialog meets WCAG AA automated accessibility checks', async ({ page
 });
 
 
-for (const preference of ['reduce', 'no-preference'] as const) {
-  test(`motion starts automatically with ${preference}, ignores old saved settings, and replays`, async ({ page }) => {
-    const errors: string[] = [];
-    page.on('pageerror', (error) => errors.push(error.message));
-    await page.emulateMedia({ reducedMotion: preference });
-    await page.addInitScript(() => sessionStorage.setItem('portfolio-motion', 'off'));
-    await page.goto('/');
-    const letters = page.locator('.hero-letter');
-    await expect(letters).toHaveCount(16);
-    await expect.poll(() => letters.evaluateAll((elements) => elements.some((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) > 1))).toBe(true);
-    await expect(page.getByRole('button', { name: /^(Pause|Play) animations$/ })).toHaveCount(0);
-    await expect(page.locator('.marquee-track')).toHaveCSS('animation-play-state', 'running');
-    const start = await page.locator('.marquee-track').evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41);
-    await expect.poll(() => page.locator('.marquee-track').evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41)).toBeLessThan(start - 5);
-    const orbit = page.locator('.signal-ring-orbit').first();
-    const initialOrbit = await orbit.evaluate((element) => getComputedStyle(element).transform);
-    await expect.poll(() => orbit.evaluate((element) => getComputedStyle(element).transform)).not.toBe(initialOrbit);
-    expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => !(element as SVGSVGElement).animationsPaused()))).toBe(true);
-    await page.emulateMedia({ reducedMotion: preference === 'reduce' ? 'no-preference' : 'reduce' });
-    await expect(page.locator('.marquee-track')).toHaveCSS('animation-play-state', 'running');
-    await page.reload();
-    await expect.poll(() => letters.evaluateAll((elements) => elements.some((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) > 1))).toBe(true);
-    await expect.poll(() => letters.evaluateAll((elements) => elements.every((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) < .1))).toBe(true);
-    await page.getByRole('button', { name: 'Replay intro', exact: true }).click();
-    await expect.poll(() => letters.evaluateAll((elements) => elements.some((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) > 1))).toBe(true);
-    expect(errors).toEqual([]);
+async function scrollTriggers(page: Page) {
+  return page.evaluate(async () => {
+    // Import the same Vite module used by the app, without adding a production test API.
+    const url = performance.getEntriesByType('resource').map((entry) => entry.name)
+      .find((name) => /\/gsap_ScrollTrigger\.js(?:\?|$)/.test(name));
+    if (!url) throw new Error('The app ScrollTrigger module was not loaded');
+    const { ScrollTrigger } = await import(url);
+    const triggers: { vars: { id?: string }; trigger?: Element }[] = ScrollTrigger.getAll();
+    return triggers.map((trigger) => ({ id: trigger.vars.id ?? '', connected: Boolean(trigger.trigger?.isConnected) }))
+      .sort((a, b) => a.id.localeCompare(b.id));
   });
 }
+
+async function settledIntro(page: Page) {
+  await expect.poll(() => page.locator('.hero-letter').evaluateAll((elements) => elements.every((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) < .1))).toBe(true);
+  await expect.poll(() => page.locator('.hero-intro').evaluateAll((elements) => elements.every((element) => Number(getComputedStyle(element).opacity) > .999))).toBe(true);
+}
+
+test('normal motion keeps entrances, decorative motion, scroll parallax, and Replay Intro', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.addInitScript(() => sessionStorage.setItem('portfolio-motion', 'off'));
+  await page.goto('/');
+  const letters = page.locator('.hero-letter');
+  await expect(letters).toHaveCount(16);
+  await expect.poll(() => letters.evaluateAll((elements) => elements.some((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) > 1))).toBe(true);
+  await expect(page.getByRole('button', { name: /^(Pause|Play) animations$/ })).toHaveCount(0);
+  const marquee = page.locator('.marquee-track');
+  const start = await marquee.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41);
+  await expect.poll(() => marquee.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41)).toBeLessThan(start - 5);
+  const orbit = page.locator('.signal-ring-orbit').first();
+  const initialOrbit = await orbit.evaluate((element) => getComputedStyle(element).transform);
+  await expect.poll(() => orbit.evaluate((element) => getComputedStyle(element).transform)).not.toBe(initialOrbit);
+  expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => !(element as SVGSVGElement).animationsPaused()))).toBe(true);
+  await settledIntro(page);
+  const persistent = (await scrollTriggers(page)).filter((trigger) => !trigger.id.startsWith('portfolio-reveal-'));
+  for (let replay = 0; replay < 2; replay += 1) {
+    await page.getByRole('button', { name: 'Replay intro', exact: true }).click();
+    await expect.poll(() => letters.evaluateAll((elements) => elements.some((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).m42) > 1))).toBe(true);
+    expect((await scrollTriggers(page)).filter((trigger) => !trigger.id.startsWith('portfolio-reveal-'))).toEqual(persistent);
+    await settledIntro(page);
+  }
+  await page.evaluate(() => window.scrollTo({ top: 250, behavior: 'instant' }));
+  await expect.poll(() => page.locator('.hero-portrait-parallax').evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m42)).toBeLessThan(-1);
+});
+
+test('reduced motion keeps content static, visible, and usable including newly mounted diagrams', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('.portfolio-root')).toHaveClass(/motion-reduced/);
+  expect(await scrollTriggers(page)).toEqual([]);
+  expect(await page.locator('[data-reveal], .hero-intro, .hero-letter').evaluateAll((elements) => elements.every((element) => {
+    const style = getComputedStyle(element);
+    return style.visibility === 'visible' && Number(style.opacity) === 1 && Math.abs(new DOMMatrix(style.transform).m42) < .1;
+  }))).toBe(true);
+  const decorative = page.locator('.marquee-track, .signal-ring-orbit, .hero-orbit-label, .portrait-halo, .hero-atmosphere i, .orbit-type, .identity-command i');
+  const snapshot = () => decorative.evaluateAll((elements) => elements.map((element) => {
+    const style = getComputedStyle(element);
+    return { transform: style.transform, translate: style.translate, opacity: style.opacity, animation: style.animationName };
+  }));
+  const initial = await snapshot();
+  expect(initial.every((style) => style.animation === 'none')).toBe(true);
+  // An interval comparison catches loops accidentally left active by CSS or SVG.
+  await page.waitForTimeout(350);
+  expect(await snapshot()).toEqual(initial);
+  const explore = page.getByRole('link', { name: 'Explore my work', exact: true });
+  await explore.hover();
+  await expect(page.locator('.motion-cursor')).toBeHidden();
+  expect(await explore.evaluate((element) => element.style.getPropertyValue('--magnet-x'))).toBe('');
+  await expect(page.getByRole('button', { name: 'Replay intro', exact: true })).toBeDisabled();
+  await page.evaluate(() => {
+    window.scrollTo({ top: 250, behavior: 'instant' });
+    (document.querySelector('.replay-intro') as HTMLButtonElement).click();
+  });
+  expect(await page.evaluate(() => window.scrollY)).toBe(250);
+  await expect(page.locator('.hero-portrait-parallax')).toHaveCSS('transform', 'none');
+  const filters = page.getByRole('group', { name: 'Filter projects' });
+  await filters.getByRole('button', { name: /^Cloud/ }).click();
+  await filters.getByRole('button', { name: /^Delivery/ }).click();
+  await page.getByRole('button', { name: 'Read Ultimate DevOps case study', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toHaveCSS('animation-name', 'none');
+  expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => (element as SVGSVGElement).animationsPaused()))).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  expect(await scrollTriggers(page)).toEqual([]);
+});
+
+test('live preference changes and filtering clean up ScrollTriggers without duplicates or stale cards', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await ready(page);
+  const baseline = (await scrollTriggers(page)).filter((trigger) => !trigger.id.startsWith('portfolio-reveal-'));
+  expect(baseline).toHaveLength(8);
+  for (let cycle = 0; cycle < 2; cycle += 1) {
+    // Normal-motion reveals become accessible after their section enters view.
+    await page.locator('#work').scrollIntoViewIfNeeded();
+    const filters = page.getByRole('group', { name: 'Filter projects' });
+    for (const name of [/^Cloud/, /^Delivery/, /^All work/]) {
+      await filters.getByRole('button', { name }).click();
+      const triggers = await scrollTriggers(page);
+      expect(triggers.every((trigger) => trigger.connected)).toBe(true);
+      expect(new Set(triggers.map((trigger) => trigger.id)).size).toBe(triggers.length);
+      const expectedCards = name.source.includes('All') ? 3 : 2;
+      expect(triggers.filter((trigger) => trigger.id.startsWith('portfolio-art-'))).toHaveLength(expectedCards);
+      expect(triggers.filter((trigger) => trigger.id.startsWith('portfolio-card-'))).toHaveLength(expectedCards - 1);
+    }
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(page.locator('.portfolio-root')).toHaveClass(/motion-reduced/);
+    await expect.poll(() => scrollTriggers(page)).toEqual([]);
+    await expect(page.locator('.marquee-track')).toHaveCSS('animation-name', 'none');
+    await expect(page.getByRole('button', { name: 'Replay intro', exact: true })).toBeDisabled();
+    expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => (element as SVGSVGElement).animationsPaused()))).toBe(true);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(page.locator('.portfolio-root')).toHaveClass(/motion-enabled/);
+    await settledIntro(page);
+    expect((await scrollTriggers(page)).filter((trigger) => !trigger.id.startsWith('portfolio-reveal-'))).toEqual(baseline);
+    await expect(page.locator('.marquee-track')).toHaveCSS('animation-name', 'marquee');
+    await expect(page.getByRole('button', { name: 'Replay intro', exact: true })).toBeEnabled();
+    expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => !(element as SVGSVGElement).animationsPaused()))).toBe(true);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(async () => (await scrollTriggers(page)).filter((trigger) => trigger.id.startsWith('portfolio-card-')).length).toBe(0);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect.poll(async () => (await scrollTriggers(page)).filter((trigger) => trigger.id.startsWith('portfolio-card-')).length).toBe(2);
+  expect(errors).toEqual([]);
+});
+
+test('cursor settles without idle style updates and stops on reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await ready(page);
+  await page.evaluate(() => {
+    const element = document.querySelector('.motion-cursor')!;
+    element.setAttribute('data-style-writes', '0');
+    new MutationObserver((records) => {
+      element.setAttribute('data-style-writes', String(Number(element.getAttribute('data-style-writes')) + records.length));
+    }).observe(element, { attributes: true, attributeFilter: ['style'] });
+  });
+  await page.mouse.move(20, 300);
+  await expect(page.locator('.motion-cursor')).toHaveClass(/cursor-visible/);
+  await page.mouse.move(400, 300);
+  await expect.poll(() => page.locator('.motion-cursor').evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41)).toBe(400);
+  const writes = await page.locator('.motion-cursor').getAttribute('data-style-writes');
+  await page.waitForTimeout(200);
+  expect(await page.locator('.motion-cursor').getAttribute('data-style-writes')).toBe(writes);
+  const explore = page.getByRole('link', { name: 'Explore my work', exact: true });
+  await explore.hover({ position: { x: 20, y: 20 } });
+  await expect.poll(() => explore.evaluate((element) => element.style.getPropertyValue('--magnet-x'))).not.toBe('');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.locator('.motion-cursor')).toBeHidden();
+  await expect.poll(() => explore.evaluate((element) => element.style.getPropertyValue('--magnet-x'))).toBe('');
+  const reducedWrites = await page.locator('.motion-cursor').getAttribute('data-style-writes');
+  await page.mouse.move(600, 400);
+  await page.waitForTimeout(200);
+  expect(await page.locator('.motion-cursor').getAttribute('data-style-writes')).toBe(reducedWrites);
+});
+
+test('normal motion preserves navigation, search, dialogs, toolkit, and the release demo', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await ready(page);
+  await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
+  await page.getByRole('navigation').getByRole('link', { name: /Toolkit/ }).click();
+  await expect(page.getByRole('navigation')).toBeHidden();
+  await expect(page).toHaveURL(/#toolkit$/);
+  await page.getByRole('button', { name: /Cloud & infrastructure/ }).click();
+  await expect(page.locator('#tool-01')).toBeVisible();
+  await page.keyboard.press('Control+k');
+  const search = page.getByRole('dialog', { name: 'Search this portfolio' });
+  await search.getByRole('textbox').fill('ultimate');
+  await search.getByRole('button', { name: /Ultimate DevOps/ }).click();
+  await expect(page.getByRole('dialog', { name: 'Ultimate DevOps case study' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Run pipeline', exact: true }).click();
+  await expect(page.getByText('RELEASE COMPLETE', { exact: true })).toBeVisible();
+  await expect(page.locator('.pipeline-node.is-complete')).toHaveCount(4);
+});

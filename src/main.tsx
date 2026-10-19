@@ -8,9 +8,16 @@ import './styles.css';
 import './redesign.css';
 import './refinement.css';
 import './palette.css';
+import './terminal.css';
+import './case-study.css';
+
+const ProjectPage = React.lazy(() => import('./ProjectPage'));
+const isProjectPage = window.location.pathname.startsWith('/projects/');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <React.Suspense fallback={<main className="page-width" aria-busy="true"><p>Opening project documentation…</p></main>}>
+      {isProjectPage ? <ProjectPage /> : <App />}
+    </React.Suspense>
   </React.StrictMode>,
 );

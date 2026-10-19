@@ -1,0 +1,1000 @@
+{
+  "version": 1,
+  "profile": {
+    "fullName": "Mahmoud Metwally Ali",
+    "displayName": "Mahmoud Metwally",
+    "brandName": "mahmoud",
+    "nameLines": [
+      "MAHMOUD",
+      "METWALLY."
+    ],
+    "contactEmail": "mahmoudmetwall2y@gmail.com",
+    "githubUrl": "https://github.com/Mahmoudmetwall2y",
+    "linkedinUrl": "https://www.linkedin.com/in/mahmoudmetwall2y",
+    "resumeUrl": "/assets/mahmoud-metwally-cv.pdf",
+    "siteUrl": "https://mahmoudmetwall2y.online",
+    "photo": {
+      "url": "/assets/mahmoud.jpg",
+      "alt": "Mahmoud Metwally, Cloud and DevOps Engineer"
+    },
+    "aboutParagraphs": [
+      "I’m Mahmoud Metwally Ali. A DevOps engineer with an electronics background and an operations mindset.",
+      "At Easytravel, I operate production infrastructure and a self-managed k3s cluster. Before DevOps, I spent more than three years supporting IT systems, networks, and the people who depend on them.",
+      "I graduated in Communication and Electronics Engineering in 2026. Whether I’m leading a project team or troubleshooting a service, I care about repeatable delivery, clear documentation, and understanding what happens after “deploy.”"
+    ],
+    "experience": [
+      {
+        "company": "Easytravel",
+        "role": "DevOps Engineer",
+        "period": "Apr 2026 — Present",
+        "current": true,
+        "summary": "Operating the infrastructure behind a real travel platform.",
+        "details": "Seven Ubuntu servers and a self-managed k3s cluster supporting approximately ten C# microservices, SQL Server, Redis, and a Flutter application. GitHub Actions and Docker automate delivery; Terraform provisions infrastructure; Prometheus and Grafana keep services visible.",
+        "tools": [
+          "Ubuntu",
+          "k3s",
+          "GitHub Actions",
+          "Terraform",
+          "Prometheus",
+          "Grafana"
+        ]
+      },
+      {
+        "company": "Digital Egypt Pioneers Initiative",
+        "role": "DevOps Intern",
+        "period": "Nov 2025 — Jul 2026",
+        "current": false,
+        "summary": "From hands-on training to a cloud-native capstone.",
+        "details": "Built pipelines and cloud environments through the DEPI program, working across Linux, AWS, Jenkins, Docker, Kubernetes, Terraform, Ansible, Helm, and GitOps. The Space Cargo capstone brings those layers together on AWS EKS.",
+        "tools": [
+          "AWS",
+          "Jenkins",
+          "Kubernetes",
+          "Ansible",
+          "Helm",
+          "Argo CD"
+        ]
+      },
+      {
+        "company": "Water Company",
+        "role": "IT Specialist",
+        "period": "Dec 2020 — Apr 2024",
+        "current": false,
+        "summary": "The operations foundation: systems, networks, and people.",
+        "details": "Supported more than 100 users across Windows and Linux systems, LAN/WAN networks, and Cisco routers and switches. Handled connectivity incidents, patching, backups, and user access—experience that informs how I operate infrastructure today.",
+        "tools": [
+          "Linux",
+          "Windows",
+          "Cisco",
+          "Networking",
+          "Backups"
+        ]
+      }
+    ],
+    "hero": {
+      "role": "CLOUD & DEVSECOPS ENGINEER",
+      "location": "CAIRO, EGYPT / WORKING AT EASYTRAVEL.",
+      "headline": [
+        "Infrastructure that",
+        "moves you forward."
+      ],
+      "description": "From cloud architecture to the next production release. I build and operate Linux infrastructure, Kubernetes platforms, and delivery pipelines that teams can depend on.",
+      "proofLabel": "Current production responsibilities at Easytravel",
+      "proof": [
+        {
+          "value": "7",
+          "label": "UBUNTU SERVERS"
+        },
+        {
+          "value": "~10",
+          "label": "MICROSERVICES"
+        },
+        {
+          "value": "k3s",
+          "label": "SELF-MANAGED"
+        }
+      ]
+    },
+    "education": {
+      "year": "2026",
+      "degree": "Communication & Electronics",
+      "university": "Bachelor’s degree · BNS University, Bani Suef",
+      "languages": "ARABIC / NATIVE · ENGLISH / PROFICIENT"
+    },
+    "leadership": {
+      "teamSize": "08",
+      "eyebrow": "TECHNICAL LEAD / ASCULTICOR",
+      "title": "Connecting devices, AI, and people.",
+      "description": "Led an eight-member team delivering an IoT and AI cardiac monitoring platform, with containerized services, secure device onboarding, and cloud infrastructure."
+    }
+  },
+  "projects": [
+    {
+      "id": "three-tier",
+      "number": "01",
+      "title": "3-Tier User Platform",
+      "category": "DEVSECOPS / CLOUD DELIVERY",
+      "kind": "DEVSECOPS CONFIGURATION",
+      "summary": "A configured delivery journey: security scanning, container builds, and separate QA and production manifests for a React, Express, and MySQL platform.",
+      "description": "A user-management application with three logical layers: React for the interface, Express for the API, and MySQL for user records. This case study examines the container packaging and environment-specific delivery configuration available in my fork.",
+      "tags": [
+        "AWS EKS",
+        "Kubernetes",
+        "GitHub Actions",
+        "Docker",
+        "Trivy",
+        "SonarQube"
+      ],
+      "repo": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project",
+      "challenge": "Make application changes traceable across QA and production while collecting security findings and separating deployment credentials. The important distinction is between a check that produces a report and a check that actually blocks a release.",
+      "approach": [
+        "In the reproduced setup, the Dockerfile builds the React client into client/public, copies that output into Express, and runs the combined application as a non-root user.",
+        "The QA workflow defines Gitleaks, Checkov, Trivy, optional application checks, SonarQube analysis, image publishing, and a QA manifest update.",
+        "QA and production have separate Deployment, Service, and Ingress files. Database values reference a Kubernetes Secret; the MySQL workload and Secret definitions are not included.",
+        "Both deployment jobs request AWS credentials through GitHub OIDC, generate EKS kubeconfig, apply manifests, and request a rollout check."
+      ],
+      "evidence": [
+        {
+          "label": "QA delivery and security checks",
+          "detail": "Job dependencies, advisory scans, SBOM steps, image publishing, OIDC, and rollout commands.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/.github/workflows/qa-cicd.yml"
+        },
+        {
+          "label": "Production delivery",
+          "detail": "Pull latest, retag an image, update the production manifest, and request an EKS deployment.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/.github/workflows/prod-cd.yaml"
+        },
+        {
+          "label": "Application packaging",
+          "detail": "One Node.js image serves the built React client through Express, with a non-root runtime.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/Dockerfile"
+        },
+        {
+          "label": "Application and database boundary",
+          "detail": "User CRUD endpoints, static client serving, and the MySQL connection; database values are not reproduced here.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/server/server.js"
+        },
+        {
+          "label": "Environment configuration",
+          "detail": "Production namespace and Secret references; no health probes or resource requests are declared.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/k8-manifests/prod/app-deployment.yaml"
+        }
+      ],
+      "architecture": [
+        "React",
+        "Express API",
+        "MySQL",
+        "GitHub Actions",
+        "AWS EKS"
+      ],
+      "accent": "orange",
+      "filters": [
+        "cloud",
+        "delivery"
+      ],
+      "foundation": {
+        "label": "3-Tier User Platform by jaiswaladi246",
+        "url": "https://github.com/jaiswaladi246/3-Tier-User-Platform-Project"
+      },
+      "caseStudy": {
+        "revision": "8cf00a4166acb21ef791f48234e77951eb43cb37",
+        "status": "Configuration reviewed",
+        "contribution": "I recreated this setup hands-on while following an Udemy course and used the creator’s fork to organize the work. My focus was container packaging and the DevOps delivery workflow, rather than authoring the React/Express application. The public fork matches upstream at this revision; my explanation establishes the learning context, while personal execution still needs run or deployment records.",
+        "architecture": {
+          "description": "Three logical application tiers, not three separate application containers. Express serves the built React assets and calls MySQL. The manifests refer to a mysql Service and mysql-secret that must be supplied separately.",
+          "lanes": [
+            {
+              "title": "Application request path",
+              "nodes": [
+                {
+                  "title": "React interface",
+                  "detail": "Built static assets; user-management UI"
+                },
+                {
+                  "title": "Express / Node.js",
+                  "detail": "Serves assets and /api/users on port 5000; same application image",
+                  "via": "UI / API requests"
+                },
+                {
+                  "title": "MySQL dependency",
+                  "detail": "Referenced by service name and Secret; database provisioning is outside the included manifests",
+                  "via": "MySQL connection"
+                }
+              ]
+            },
+            {
+              "title": "Environment delivery",
+              "nodes": [
+                {
+                  "title": "QA branch / GitHub Actions",
+                  "detail": "Reports → client build → image publication → QA manifest update"
+                },
+                {
+                  "title": "Main / production workflow",
+                  "detail": "Pull mutable latest → retag → update production manifest",
+                  "via": "Latest image promotion"
+                },
+                {
+                  "title": "EKS deployment commands",
+                  "detail": "Separate qa/prod namespaces; OIDC credentials, kubectl apply, rollout status configured",
+                  "via": "OIDC / kubectl commands"
+                }
+              ]
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "choice": "Package React and Express together",
+            "tradeoff": "One application image reduces packaging steps, but couples UI and API releases and keeps build tooling in the single-stage image."
+          },
+          {
+            "choice": "Separate namespaces and role references",
+            "tradeoff": "QA/prod configuration and AWS role secrets are distinct. Namespace separation alone does not demonstrate network isolation or least-privilege IAM."
+          },
+          {
+            "choice": "Collect findings before tightening gates",
+            "tradeoff": "Gitleaks/Trivy use exit-code 0; Checkov errors are ignored; lint, tests, and the SonarQube quality gate can continue on error. Reports provide visibility without enforcing acceptance."
+          }
+        ],
+        "delivery": [
+          "A qa push affecting application/workflow files schedules the scan and application-check jobs. Client/server packages do not define lint or test scripts, so --if-present does not establish test coverage.",
+          "The image job depends on the client build, not SonarQube. Docker Buildx uses the action’s default Git context without checkout. The separate source-SBOM step targets the runner workspace (path .), so source coverage needs checkout and validation.",
+          "A manifest update is committed to qa before deployment. Production triggers on selected main paths, pulls the mutable QA latest tag, retags it, updates prod, and requests deployment; no approval or digest verification is shown."
+        ],
+        "security": [
+          "Configured controls include non-root application packaging, Kubernetes Secret references, scan/report artifacts, SBOM generation, and AWS OIDC credential requests.",
+          "Scan findings are advisory. The repository contains no Terraform files for its Terraform scan, and the supplied application Deployment has no probes, resource budgets, or network policy."
+        ],
+        "observability": [
+          "Security reports and requested rollout status are the available delivery signals. No project-specific metrics, trace pipeline, dashboards, or alert rules are present in this repository."
+        ],
+        "verification": {
+          "summary": "Source configuration reviewed; the GitHub Actions API returned zero runs for this fork. The minimal README contains no deployment demonstration. This case study does not claim a successful pipeline or running EKS application.",
+          "limitations": [
+            "Default Git context supplies the image build source, but the source-SBOM path has no checked-out source tree in its job.",
+            "MySQL workload/Secret provisioning and namespace/bootstrap resources are external prerequisites.",
+            "The public fork preserves the course foundation unchanged; it does not independently record my hands-on execution."
+          ]
+        },
+        "lessons": [
+          "A scan can succeed as a reporting job while accepting findings. Its exit policy and dependency graph determine whether it protects a release.",
+          "A tag derived from a production workflow SHA does not prove the promoted image came from that source when the input is mutable latest."
+        ],
+        "next": [
+          "Check out source for the workspace SBOM and add real application tests, then validate the whole QA workflow in a clean run.",
+          "Promote a verified digest through an approval boundary; enforce selected scan gates and add workload probes, resource budgets, and database bootstrap evidence."
+        ],
+        "learningContext": "Hands-on Udemy course reproduction"
+      }
+    },
+    {
+      "id": "space-cargo",
+      "number": "02",
+      "title": "Space Cargo",
+      "category": "CLOUD INFRASTRUCTURE / DELIVERY",
+      "kind": "CLOUD PLATFORM / DEPI",
+      "summary": "A four-service cargo demo with private-EKS configuration, SHA-tagged image delivery, Istio traffic policies, and a verified image-build/Helm-update run.",
+      "description": "A cargo simulation built to explore service calls, injected latency/errors, and CPU load. Terraform and Ansible define the EKS platform; Helm packages four workloads; the verified CI path publishes images and records their tags in Git. Cluster deployment remains a separate evidence boundary.",
+      "tags": [
+        "AWS EKS",
+        "Kubernetes",
+        "Terraform",
+        "Ansible",
+        "Helm",
+        "Istio",
+        "GitHub Actions",
+        "Prometheus",
+        "Grafana"
+      ],
+      "repo": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-",
+      "challenge": "Connect a private cluster-management plane to an accessible application without confusing the two boundaries. Keep desired image versions traceable while coordinating mesh policies, workload resources, and metrics collection.",
+      "approach": [
+        "The repository defines an EKS private-only API, private worker subnets, a public administration host, and Ansible platform/bootstrap tasks.",
+        "Helm defines the Nginx frontend, FastAPI cargo and telemetry APIs, and Go routing service, with workload identities, probes, resource budgets, mesh policy, and selected disruption budgets.",
+        "My account-linked commits include per-pod metrics scraping and the Grafana operations dashboard. The repository also includes other contributors; it does not establish sole authorship.",
+        "CI builds four image variants and updates Helm values with a source SHA. Ansible supplies helm upgrade --install; Argo CD reconciliation is described as a direction, with no Application or controller setup found."
+      ],
+      "evidence": [
+        {
+          "label": "Private EKS configuration",
+          "detail": "Private-only API and managed nodes in two private subnets; configuration does not prove provisioning.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/terraform/EKS.tf"
+        },
+        {
+          "label": "Platform provisioning path",
+          "detail": "Load-balancer controller, Istio/CNI, namespace policy, and Helm deployment commands.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/ansible/playbooks/deploy-eks.yml"
+        },
+        {
+          "label": "Delivery pipeline",
+          "detail": "Four image builds, push-only publishing, and source-SHA image-tag updates in Git.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/.github/workflows/ci.yaml"
+        },
+        {
+          "label": "Workload controls",
+          "detail": "Non-root/read-only containers, probes, rolling-update settings, resources, and chart-generated images.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/helm/space-cargo/templates/deployments.yaml"
+        },
+        {
+          "label": "Service identities and authorization",
+          "detail": "Default-deny mesh authorization and explicit service-account principals.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/helm/space-cargo/templates/authorization-policy.yaml"
+        },
+        {
+          "label": "Private metrics transport",
+          "detail": "In-cluster Prometheus scrape configuration and remote_write to central Prometheus.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/monitoring/prometheus-server/prometheus-server.yaml"
+        },
+        {
+          "label": "Grafana dashboard",
+          "detail": "Versioned queries for application/mesh traffic, latency, HPA, and infrastructure signals.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/monitoring/monitoring-server/grafana/dashboards/space-cargo/overview.json"
+        },
+        {
+          "label": "Mesh transport policy",
+          "detail": "STRICT mTLS request, Istio gateway routes, mutual TLS destination rules, and outlier settings.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/helm/space-cargo/templates/istio.yaml"
+        },
+        {
+          "label": "Resources and autoscaling",
+          "detail": "Per-workload budgets/replicas and a configured telemetry HPA from two to six replicas.",
+          "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/blob/main/infrastructure/helm/space-cargo/values.yaml"
+        }
+      ],
+      "architecture": [
+        "AWS ALB",
+        "Istio gateway",
+        "EKS services",
+        "Prometheus",
+        "Grafana"
+      ],
+      "accent": "lime",
+      "filters": [
+        "cloud"
+      ],
+      "caseStudy": {
+        "revision": "efa13ecd127257130c6aca4d5410ae750e164d5a",
+        "status": "CI execution verified",
+        "contribution": "My attributable repository work includes per-pod Istio metrics collection and the Grafana operations dashboard, linked below. The broader DEPI platform is documented as a shared repository implementation; its history includes multiple contributors.",
+        "contributionEvidence": [
+          {
+            "label": "My metrics configuration commit",
+            "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/commit/200332203abe8f94ca283d44e420cb4f1365e392"
+          },
+          {
+            "label": "My dashboard commit",
+            "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/commit/61680c3ffabe4985b4216729db6ef4b772fbc9df"
+          }
+        ],
+        "architecture": {
+          "description": "The EKS API is private; the application entry is an internet-facing HTTP ALB forwarding to an internal Istio gateway. Gateway routes target the four services; cargo also calls telemetry and routing. This is a simplified configuration view, not a live cluster map.",
+          "lanes": [
+            {
+              "title": "Application traffic / private workers",
+              "nodes": [
+                {
+                  "title": "Internet-facing HTTP ALB",
+                  "detail": "Public port 80 entry; TLS termination is not configured in this ingress"
+                },
+                {
+                  "title": "Internal Istio gateway",
+                  "detail": "Routes frontend and /api/cargo, /api/telemetry, /api/routing",
+                  "via": "HTTP / ALB forwarding"
+                },
+                {
+                  "title": "Four application workloads",
+                  "detail": "Nginx frontend · FastAPI cargo · FastAPI telemetry · Go routing; cargo calls telemetry/routing",
+                  "via": "Configured gateway routes"
+                }
+              ]
+            },
+            {
+              "title": "Private management plane",
+              "nodes": [
+                {
+                  "title": "Administration host",
+                  "detail": "Host in the VPC; Ansible platform/bootstrap commands"
+                },
+                {
+                  "title": "Private EKS API",
+                  "detail": "Public endpoint disabled; manager security-group access on 443",
+                  "via": "VPC access / HTTPS"
+                }
+              ]
+            },
+            {
+              "title": "Metrics transport",
+              "nodes": [
+                {
+                  "title": "Workload and cluster metrics",
+                  "detail": "Merged application/Istio endpoints, Kubernetes state, node and cAdvisor signals"
+                },
+                {
+                  "title": "In-cluster Prometheus",
+                  "detail": "Dedicated monitoring namespace and scrape configuration",
+                  "via": "Configured scrape"
+                },
+                {
+                  "title": "Central Prometheus → Grafana",
+                  "detail": "Private-VPC remote_write; provisioned dashboard/data source. Demo UI exposure requires hardening",
+                  "via": "Remote write / data source"
+                }
+              ]
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "choice": "Keep cluster API private; expose one application entry",
+            "tradeoff": "Administration needs VPC access and bootstrap prerequisites. A private API does not make the internet-facing HTTP application encrypted or private."
+          },
+          {
+            "choice": "Commit source-SHA image tags",
+            "tradeoff": "Git records the selected version for each workload. SHA tags are traceable names, not enforced immutable digests; reconciliation is not proven without a deployed controller."
+          },
+          {
+            "choice": "Scale telemetry; keep cargo at one replica",
+            "tradeoff": "The values define a 2–6 replica CPU HPA for telemetry. Cargo stores state in memory, so replicating it without shared storage would diverge records."
+          }
+        ],
+        "delivery": [
+          "Infrastructure provisioning and Ansible bootstrap are separate from application CI. The playbook configures metrics-server, the ALB controller, Istio/CNI, restricted application namespace policy, and Helm installation.",
+          "CI installs Python dependencies and invokes go test ./... for routing; there are no routing _test.go files in the reviewed tree. Pull requests build without pushing; main pushes build/publish four image variants.",
+          "The next job writes the source SHA into all four Helm image tags and commits Git desired state. The checked-in deployment route is Ansible/Helm; no Argo CD Application, installation, or sync result is supplied."
+        ],
+        "security": [
+          "Helm configures non-root/read-only containers, dropped capabilities, RuntimeDefault seccomp, startup/readiness/liveness probes, and CPU/memory requests and limits.",
+          "Istio configuration requests STRICT mTLS, service-account authorization, and connection/outlier controls. NetworkPolicy templates define default-deny and permitted traffic; enforcement still requires a compatible CNI and applied mesh configuration.",
+          "The Terraform manager security group permits SSH from any IPv4 source. The application ALB is HTTP-only, and monitoring docs describe public demo UI access. These are hardening gaps, not production-security claims."
+        ],
+        "observability": [
+          "Application counters and latency histograms are defined in service code. In-cluster Prometheus scrapes merged sidecar/application endpoints plus Kubernetes/node signals and remote-writes to central Prometheus; Grafana has a provisioned data source and dashboard.",
+          "Latency, error, and CPU controls are implemented demo features. The reviewed artifacts do not include measured experiments, observed HPA scaling, alert evaluations, a trace backend, or centralized log aggregation."
+        ],
+        "verification": {
+          "summary": "GitHub run 29333854603 at d4d187a records successful dependency/Go-command, four image build/push, and Helm-tag update steps. This validates that CI execution, not Terraform apply, Helm rollout, mesh enforcement, or production operation.",
+          "execution": {
+            "label": "Successful CI run and job steps",
+            "url": "https://github.com/Mahmoudmetwall2y/DEPI-Graduation-Project-/actions/runs/29333854603"
+          },
+          "limitations": [
+            "The successful run predates the reviewed HEAD; it is not evidence that every later infrastructure change was applied.",
+            "Argo CD deployment/reconciliation and observed scaling are not demonstrated.",
+            "Ansible defaults specify kubectl 1.35 while Terraform specifies EKS 1.31; tool/version alignment needs validation. Some documentation describes an older monitoring state.",
+            "Terraform defines only one public subnet; the internet-facing ALB design needs subnet placement across two availability zones before provisioning can be validated."
+          ]
+        },
+        "lessons": [
+          "Versioned desired state and a passing image job are useful evidence boundaries, but neither proves that a cluster reconciled or served that version.",
+          "Application state determines safe replication; metric collection also needs transport and authorization paths across the mesh and VPC boundaries."
+        ],
+        "next": [
+          "Add and demonstrate Argo CD reconciliation if GitOps deployment is desired; align EKS/kubectl versions and add actual Python/Go test cases.",
+          "Replace demo HTTP/UI exposure with authenticated TLS, restrict SSH, and capture deployment/policy/HPA evidence; externalize cargo state before horizontal scaling."
+        ]
+      }
+    },
+    {
+      "id": "ultimate-devops",
+      "number": "03",
+      "title": "Ultimate DevOps",
+      "category": "MICROSERVICES / OBSERVABILITY",
+      "kind": "DISTRIBUTED SYSTEMS STUDY",
+      "summary": "An upstream Astronomy Shop study with product-catalog CI configuration, Kubernetes service manifests, and a Docker Compose telemetry path through OpenTelemetry.",
+      "description": "Astronomy Shop is the OpenTelemetry authors’ distributed commerce demo. This case study follows the product-catalog delivery configuration and separates the Kubernetes application bundle from the Docker Compose observability stack available in my fork.",
+      "tags": [
+        "Kubernetes",
+        "Docker",
+        "OpenTelemetry",
+        "Grafana",
+        "GitHub Actions",
+        "Go"
+      ],
+      "repo": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo",
+      "challenge": "Trace a catalog change through packaging and desired-state updates, then understand where application signals travel. Keep inherited application code, deployment variants, and unverified execution clearly separated.",
+      "approach": [
+        "The fork contains the upstream Astronomy Shop services and Kubernetes application definitions, including frontend, catalog, cart, checkout, payment, and shipping.",
+        "The product-catalog pull-request workflow defines Go build/test commands, a separate lint job, Docker publication, and an update to its dedicated Kubernetes manifest.",
+        "Docker Compose defines the Collector, Prometheus, Jaeger, Grafana, and OpenSearch. The Collector routes traces, metrics, and logs to different destinations.",
+        "I followed the course to recreate the DevOps setup. The fork preserves iam-veeramalla’s implementation and the OpenTelemetry authors’ application foundation; this source audit does not verify my personal runs."
+      ],
+      "evidence": [
+        {
+          "label": "Product-catalog CI",
+          "detail": "Pull-request jobs, Go commands, independent lint, Docker publishing, and a forced main manifest push.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/.github/workflows/ci.yaml"
+        },
+        {
+          "label": "Kubernetes application bundle",
+          "detail": "Application Deployments/Services and OTLP references; telemetry backend deployments are absent here.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/kubernetes/complete-deploy.yaml"
+        },
+        {
+          "label": "Catalog image packaging",
+          "detail": "Multi-stage Go build and Alpine release image; a non-root runtime is not declared.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/src/product-catalog/Dockerfile"
+        },
+        {
+          "label": "Compose telemetry deployment",
+          "detail": "Actual wiring for Collector, Jaeger, Prometheus OTLP ingestion, Grafana, and OpenSearch.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/docker-compose.yml"
+        },
+        {
+          "label": "Telemetry collection",
+          "detail": "OTLP receivers; transformed/batched traces to Jaeger, metrics to Prometheus, and logs to OpenSearch.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/src/otel-collector/otelcol-config.yml"
+        },
+        {
+          "label": "Grafana data sources",
+          "detail": "Prometheus metrics data source and trace/exemplar links; Jaeger/OpenSearch are separately provisioned.",
+          "url": "https://github.com/Mahmoudmetwall2y/ultimate-devops-project-demo/blob/main/src/grafana/provisioning/datasources/default.yaml"
+        }
+      ],
+      "architecture": [
+        "Microservices",
+        "OTel Collector",
+        "Prometheus",
+        "Jaeger",
+        "Grafana"
+      ],
+      "accent": "blue",
+      "filters": [
+        "delivery"
+      ],
+      "foundation": {
+        "label": "OpenTelemetry Astronomy Shop and the iam-veeramalla DevOps demo",
+        "url": "https://github.com/iam-veeramalla/ultimate-devops-project-demo"
+      },
+      "caseStudy": {
+        "revision": "c9f81edab0792575062681e6f4895536bba492d2",
+        "status": "Configuration reviewed",
+        "contribution": "I recreated the DevOps setup hands-on while following an Udemy course and retained the creator’s fork for organization. My scope was the deployment, container-delivery, and observability setup, not independent development of every service. The public fork matches iam-veeramalla/main; personal execution is owner-described, while the source itself remains attributed to its creators.",
+        "architecture": {
+          "description": "Two deployment views are intentionally separated. Kubernetes manifests describe application services and reference an OTLP Collector, but do not supply that backend stack. The signal flow below is defined by Docker Compose and the Collector configuration.",
+          "lanes": [
+            {
+              "title": "Kubernetes application view",
+              "nodes": [
+                {
+                  "title": "Frontend proxy → frontend",
+                  "detail": "Application Service/Deployment definitions; this is not an Ingress resource"
+                },
+                {
+                  "title": "Commerce services",
+                  "detail": "Catalog · cart · checkout · payment · shipping and other upstream services",
+                  "via": "Service calls"
+                },
+                {
+                  "title": "OTLP Collector reference",
+                  "detail": "Application environment variables target opentelemetry-demo-otelcol; backend resources are not included in this bundle",
+                  "via": "OTLP signal export"
+                }
+              ]
+            },
+            {
+              "title": "Docker Compose signal flow",
+              "nodes": [
+                {
+                  "title": "Instrumented demo services",
+                  "detail": "OTLP gRPC/HTTP receivers plus infrastructure metrics receivers"
+                },
+                {
+                  "title": "OpenTelemetry Collector",
+                  "detail": "Trace transforms/batching; spanmetrics connector derives metrics from traces",
+                  "via": "OTLP / metrics receivers"
+                },
+                {
+                  "title": "Signal destinations",
+                  "detail": "Traces → Jaeger; metrics → Prometheus; logs → OpenSearch; debug exporters also configured",
+                  "via": "Separate signal exporters"
+                },
+                {
+                  "title": "Grafana data sources",
+                  "detail": "Prometheus metrics, Jaeger traces, and OpenSearch logs; dashboards are inherited demo artifacts",
+                  "via": "Read backend data sources"
+                }
+              ]
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "choice": "Use an instrumented upstream application",
+            "tradeoff": "A realistic service topology makes telemetry relationships inspectable. It must remain attributed rather than presented as independently authored services."
+          },
+          {
+            "choice": "Build the catalog with a multi-stage image",
+            "tradeoff": "The release image excludes the Go toolchain, but its Dockerfile does not specify a non-root user. Runtime environment and port alignment still need verification."
+          },
+          {
+            "choice": "Separate signal backends",
+            "tradeoff": "Jaeger, Prometheus, and OpenSearch serve different signals. Compose wiring is concrete, while the Kubernetes application file alone does not provide those backends."
+          }
+        ],
+        "delivery": [
+          "A pull request to main schedules Go build and go test ./..., plus a separate golangci-lint job. No product-catalog _test.go files were found; the lint job is not a dependency of Docker publication.",
+          "The Docker job depends on build, publishes a run-ID-tagged catalog image, then updatek8s rewrites kubernetes/productcatalog/deploy.yaml and force-pushes to main.",
+          "The workflow contains no kubectl apply, Helm release, or reconciliation step. Its image update targets the dedicated catalog file, while complete-deploy.yaml still references an upstream image."
+        ],
+        "security": [
+          "Application manifests declare service accounts and memory limits. The selected catalog Dockerfile does not declare USER, and the workflow has no scanner or deployment approval gate.",
+          "Collector backend transport uses insecure TLS settings/HTTP in the demo. Docker Compose runs the Collector as root with host filesystem and Docker socket mounts; those are demo privileges requiring review before broader use.",
+          "A publishing workflow on pull requests needs careful secret and branch-write boundaries. Its forced main push and independent lint dependency are documented limitations, not recommended release controls."
+        ],
+        "observability": [
+          "OTLP traces pass through transform/batch processors to Jaeger and debug output, with spanmetrics feeding the metrics pipeline. Metrics go through OTLP HTTP to Prometheus; logs go to OpenSearch and debug output.",
+          "Grafana provisions Prometheus, Jaeger, and OpenSearch data sources. The repository includes dashboard definitions and upstream examples; there is no fork-specific evidence of collected live signals or measured reliability improvements."
+        ],
+        "verification": {
+          "summary": "The Actions API returned zero runs for this fork. Source confirms the catalog and telemetry configuration; it does not confirm successful publication, a Kubernetes rollout, collected traces, or production operation.",
+          "limitations": [
+            "The public fork preserves the course foundation unchanged; personal workflow and deployment execution needs separate records.",
+            "Kubernetes application manifests reference a Collector without including the telemetry backend resources.",
+            "The workflow updates a different manifest from the complete application bundle and does not deploy it."
+          ]
+        },
+        "lessons": [
+          "An OTLP environment variable expresses a destination, not proof that the Collector or its backends exist in the chosen deployment.",
+          "Publishing an image and committing a manifest are distinct from deployment; checking which manifest changes prevents a misleading delivery story."
+        ],
+        "next": [
+          "Document my reproduction steps and a demonstrated catalog run; add real catalog tests and make quality checks a release dependency.",
+          "Replace forced main updates with reviewed changes, harden runtime/telemetry access, and reconcile the catalog manifest plus backend resources for one verified deployment variant."
+        ],
+        "learningContext": "Hands-on Udemy course reproduction"
+      }
+    }
+  ],
+  "documentation": {
+    "three-tier": {
+      "subtitle": "From application tiers to environment-specific delivery",
+      "focus": "Container packaging · DevSecOps checks · QA / production boundaries",
+      "repository": [
+        {
+          "path": "client/",
+          "purpose": "React interface and Webpack build. The client build produces public assets used by the application image."
+        },
+        {
+          "path": "server/server.js",
+          "purpose": "Express API, static asset serving, MySQL connection, and users-table initialization."
+        },
+        {
+          "path": "Dockerfile",
+          "purpose": "Node 20 packaging, client build, server dependencies, and the non-root application user."
+        },
+        {
+          "path": ".github/workflows/qa-cicd.yml",
+          "purpose": "QA job graph: reports, application build, image scanning/publication, manifest update, and requested EKS rollout."
+        },
+        {
+          "path": ".github/workflows/prod-cd.yaml",
+          "purpose": "Production image retagging, manifest update, AWS OIDC authentication, and deployment commands."
+        },
+        {
+          "path": "k8-manifests/",
+          "purpose": "Separate QA and production application resources. Database and bootstrap dependencies must be provided independently."
+        }
+      ],
+      "prerequisites": [
+        {
+          "title": "Application and database",
+          "detail": "For local application work, use compatible Node tooling and a reachable MySQL database. Provide DB_HOST, DB_USER, DB_PASSWORD, and DB_NAME explicitly. The application initializes a users table after connecting; it does not create the database or provision MySQL."
+        },
+        {
+          "title": "Image and quality services",
+          "detail": "Container publication needs registry credentials. SonarQube analysis needs its configured service and credentials. Treat the workflow references as integration requirements rather than preconfigured services in a fresh fork."
+        },
+        {
+          "title": "Kubernetes and AWS access",
+          "detail": "The QA/prod namespaces, database Service, mysql-secret, image-pull credentials, ingress controller, EKS cluster, and OIDC role trust must exist before a rollout. Review IAM scope and your current cluster context before any infrastructure operation."
+        }
+      ],
+      "walkthrough": [
+        {
+          "title": "Understand the request and data path",
+          "detail": "The browser uses the React interface to call /api/users. Express implements GET, POST, PUT, and DELETE operations and issues MySQL queries. Its API and static frontend are logical layers in a shared application image, with MySQL outside that image. Mutation queries use placeholders; that alone does not establish authentication or authorization.",
+          "source": "server/server.js"
+        },
+        {
+          "title": "Follow the application packaging",
+          "detail": "The Dockerfile installs client dependencies, builds the frontend, then installs server runtime dependencies. It creates an application user and exposes port 5000. This is a single-stage build, so separating build tooling from the release image remains an improvement.",
+          "source": "Dockerfile"
+        },
+        {
+          "title": "Read the QA workflow as a dependency graph",
+          "detail": "A qualifying push to qa starts the configured checks and build chain. Distinguish report-producing scans from blocking gates: several scan exit codes and continue-on-error settings permit the workflow to continue. Optional lint/test invocations do not provide coverage when package scripts are absent.",
+          "source": ".github/workflows/qa-cicd.yml"
+        },
+        {
+          "title": "Trace image publication and manifest changes",
+          "detail": "The image job builds and loads an image, requests image scans and SBOM generation, publishes tags, and updates the QA deployment reference. Docker Buildx can fetch the default Git context without checkout; filesystem-based source-report steps still need a populated workspace.",
+          "source": ".github/workflows/qa-cicd.yml"
+        },
+        {
+          "title": "Inspect the production boundary",
+          "detail": "The production workflow pulls mutable latest and retags it before updating the production manifest. A new tag does not prove that the image is the exact QA-approved digest. OIDC credential acquisition and rollout commands are configured, but the reviewed fork has no recorded run proving their execution.",
+          "source": ".github/workflows/prod-cd.yaml"
+        }
+      ],
+      "commands": [
+        {
+          "title": "Inspect the build inputs",
+          "detail": "From the checked-out repository root. These commands display configuration; they do not build or deploy the application.",
+          "code": "git show HEAD:Dockerfile\ngit show HEAD:client/package.json\ngit show HEAD:server/package.json",
+          "source": "Dockerfile"
+        },
+        {
+          "title": "Inspect an existing QA deployment",
+          "detail": "Only after independently provisioning the dependencies and confirming your kubeconfig context. The following commands read cluster state; their output has not been recorded as project evidence here.",
+          "code": "kubectl config current-context\nkubectl -n qa get deployment nodejs-app\nkubectl -n qa rollout status deployment/nodejs-app --timeout=60s\nkubectl -n qa get events --sort-by=.metadata.creationTimestamp",
+          "source": "k8-manifests/qa/app-deployment.yaml"
+        },
+        {
+          "title": "Verify a locally running API",
+          "detail": "Requires an application listening on localhost:5000 and a configured database. Check for an HTTP success status and JSON matching the users query; no fixed row count or response time is assumed.",
+          "code": "curl --fail-with-body http://localhost:5000/api/users",
+          "source": "server/server.js"
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "The application exits at startup",
+          "checks": "Inspect the server log for a database connection or table-initialization error. Confirm the database exists, the credentials are valid, and DB_HOST resolves from the application runtime. A container’s localhost points to that container."
+        },
+        {
+          "symptom": "A security report exists but a release still proceeds",
+          "checks": "Read the tool exit-code flags, continue-on-error settings, and job needs graph. The configured reporting behavior is advisory in several places; a report artifact is not evidence of an enforced policy gate."
+        },
+        {
+          "symptom": "QA pods cannot start or pull the image",
+          "checks": "Check namespace events, mysql-secret keys, regcred availability, the rendered image tag, and registry access. The application manifests do not supply these dependencies automatically."
+        },
+        {
+          "symptom": "The production image cannot be tied to QA approval",
+          "checks": "Compare resolved registry digests rather than trusting latest or a retagged SHA. Digest-based promotion and explicit approvals are proposed improvements, not behavior demonstrated by this workflow."
+        }
+      ]
+    },
+    "space-cargo": {
+      "subtitle": "Private EKS, controlled service traffic, and observable delivery",
+      "focus": "Terraform / Ansible · Helm / Istio · Prometheus / Grafana",
+      "repository": [
+        {
+          "path": "services/",
+          "purpose": "Nginx frontend, FastAPI cargo and telemetry services, Go routing service, and their container build files."
+        },
+        {
+          "path": "infrastructure/terraform/",
+          "purpose": "VPC, routes, EKS, IAM, and administration-host configuration."
+        },
+        {
+          "path": "infrastructure/ansible/",
+          "purpose": "Administration-host bootstrap, cluster tooling, platform installation, and Helm deployment tasks."
+        },
+        {
+          "path": "infrastructure/helm/space-cargo/",
+          "purpose": "Workload packaging, probes/resources, image values, autoscaling, network policy, and Istio configuration."
+        },
+        {
+          "path": "infrastructure/monitoring/",
+          "purpose": "In-cluster scraping, central Prometheus transport, Grafana provisioning, and dashboards."
+        },
+        {
+          "path": ".github/workflows/ci.yaml",
+          "purpose": "Service commands, four-image build/push, and commits updating Helm image tags."
+        }
+      ],
+      "prerequisites": [
+        {
+          "title": "Local exploration",
+          "detail": "The repository provides infrastructure/docker/compose.yaml for a local environment. Git, Docker Engine, and Compose v2 are needed. Inspect the file first; local execution starts containers and consumes local resources."
+        },
+        {
+          "title": "Cloud and management access",
+          "detail": "Terraform, Ansible, AWS credentials, kubectl, Helm, and VPC reachability to the private EKS API are separate prerequisites. Use the administration path rather than assuming a public Kubernetes endpoint exists."
+        },
+        {
+          "title": "Resolve deployment prerequisites",
+          "detail": "Before attempting provisioning, address the single public subnet relative to multi-AZ ALB requirements and align kubectl with the EKS version. Replace demo access rules and configure the intended TLS/authentication boundaries. No cloud apply was run as part of this portfolio review."
+        }
+      ],
+      "walkthrough": [
+        {
+          "title": "Map infrastructure and access boundaries",
+          "detail": "Terraform defines private worker subnets and a private-only EKS API. The administration host supplies a management path inside the VPC. Internet-facing application access is a separate HTTP ALB path, so private cluster management does not imply private application access.",
+          "source": "infrastructure/terraform/EKS.tf"
+        },
+        {
+          "title": "Follow platform bootstrap into Helm",
+          "detail": "Ansible verifies node access and configures platform components including the load-balancer controller, metrics-server, Istio/CNI, and application release. Inspect task ordering and version defaults before execution. Desired-state configuration is present; successful platform bootstrap is not established by the CI run.",
+          "source": "infrastructure/ansible/playbooks/deploy-eks.yml"
+        },
+        {
+          "title": "Trace application requests",
+          "detail": "The ALB forwards to the internal Istio gateway, which routes the frontend and API prefixes to four ClusterIP services. Cargo also calls telemetry and routing. Cargo data is held in memory, so adding replicas requires a state-design decision rather than only increasing a Helm number.",
+          "source": "infrastructure/helm/space-cargo/templates/istio.yaml"
+        },
+        {
+          "title": "Connect CI output to declared image versions",
+          "detail": "The verified push run built and published four service images, then committed source-SHA tags into Helm values. This is evidence of CI execution and a Git update. The repository does not supply an Argo CD Application or installation that independently establishes automatic cluster reconciliation.",
+          "source": ".github/workflows/ci.yaml"
+        },
+        {
+          "title": "Verify controls and workload behavior separately",
+          "detail": "Helm requests non-root/read-only runtimes, probes, resource budgets, selected disruption budgets, STRICT mTLS, and service-account policies. Telemetry has a 2–6 replica CPU HPA target of 65%. Rendering these objects proves intended configuration, while policy enforcement and actual scaling require runtime checks.",
+          "source": "infrastructure/helm/space-cargo/values.yaml"
+        },
+        {
+          "title": "Follow the metric transport",
+          "detail": "The in-cluster Prometheus configuration scrapes application/Istio and platform signals, then remote-writes to central Prometheus. Grafana reads that source using provisioned dashboards. A dashboard JSON is a query definition; showing real samples requires scrape, remote-write, and data-source checks.",
+          "source": "infrastructure/monitoring/prometheus-server/prometheus-server.yaml"
+        }
+      ],
+      "commands": [
+        {
+          "title": "Inspect local and Helm configuration",
+          "detail": "From the checked-out repository root with Compose v2 and Helm installed. These render configuration without starting containers or applying Kubernetes resources.",
+          "code": "docker compose -f infrastructure/docker/compose.yaml config --services\nhelm lint infrastructure/helm/space-cargo\nhelm template space-cargo infrastructure/helm/space-cargo --namespace space-cargo",
+          "source": "infrastructure/helm/space-cargo/values.yaml"
+        },
+        {
+          "title": "Inspect an existing application namespace",
+          "detail": "Requires a separately provisioned cluster, private API connectivity, and authorized kubeconfig. Confirm the context first; none of these outputs are claimed as captured evidence.",
+          "code": "kubectl config current-context\nkubectl -n space-cargo get deployments,pods,services\nkubectl -n space-cargo get hpa\nkubectl -n space-cargo get networkpolicies\nkubectl -n space-cargo get peerauthentications.security.istio.io",
+          "source": "infrastructure/helm/space-cargo/values.yaml"
+        },
+        {
+          "title": "Read the declared image references",
+          "detail": "Compare each values entry to the successful CI source revision, then compare the running workload digest if a cluster is available. A source-SHA tag is traceable but is not a registry immutability policy.",
+          "code": "git show HEAD:infrastructure/helm/space-cargo/values.yaml\ngit show HEAD:.github/workflows/ci.yaml",
+          "source": ".github/workflows/ci.yaml"
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "kubectl cannot reach the cluster",
+          "checks": "First confirm VPC reachability, DNS, the administration-host route, security-group API access, and IAM authorization. A private EKS endpoint is not reachable from an arbitrary public laptop network by default."
+        },
+        {
+          "symptom": "An ALB is not provisioned",
+          "checks": "Inspect controller events, IAM permissions, subnet discovery/tags, and eligible subnets in two Availability Zones. The reviewed Terraform supplies one public subnet; additional placement must be established before assuming ingress creation succeeds."
+        },
+        {
+          "symptom": "An HPA reports unknown metrics",
+          "checks": "Check metrics-server health, pod resource requests, HPA targets, and the actual load source. A desired replica range is not proof of a scaling event; capture the metric and replica change together."
+        },
+        {
+          "symptom": "Grafana is empty despite healthy application pods",
+          "checks": "Check scrape target health, merged Istio/application endpoints, network policies, remote-write reachability, the central receiver, and dashboard label selectors. Treat each boundary as a separate observation point."
+        },
+        {
+          "symptom": "CI succeeds but workloads keep the old version",
+          "checks": "Confirm the Helm-tag commit, then identify which operator or reconciler actually applies that change. This source does not supply an Argo CD Application, so a Git commit alone does not establish continuous delivery."
+        }
+      ]
+    },
+    "ultimate-devops": {
+      "subtitle": "Distributed application delivery and the telemetry signal path",
+      "focus": "Catalog CI · Kubernetes application manifests · OpenTelemetry pipelines",
+      "repository": [
+        {
+          "path": "src/product-catalog/",
+          "purpose": "Go catalog source and multi-stage container build; the focused CI workflow operates on this component."
+        },
+        {
+          "path": ".github/workflows/ci.yaml",
+          "purpose": "PR-triggered catalog build/test/lint, image publication, and dedicated manifest update."
+        },
+        {
+          "path": "kubernetes/complete-deploy.yaml",
+          "purpose": "Application Deployments and Services with telemetry endpoint references; not a complete telemetry-backend installation."
+        },
+        {
+          "path": "kubernetes/productcatalog/deploy.yaml",
+          "purpose": "Separate product-catalog manifest targeted by the image-update workflow."
+        },
+        {
+          "path": "docker-compose.yml",
+          "purpose": "Local distributed application and observability services, with resource/environment wiring."
+        },
+        {
+          "path": "src/otel-collector/otelcol-config.yml",
+          "purpose": "Receivers, processors, connectors, and exporters defining telemetry routing."
+        },
+        {
+          "path": "src/grafana/provisioning/datasources/default.yaml",
+          "purpose": "Provisioned Prometheus, Jaeger, and OpenSearch data sources."
+        }
+      ],
+      "prerequisites": [
+        {
+          "title": "Local demo environment",
+          "detail": "Docker Engine and Compose v2 are needed for the Compose path. Check the repository environment defaults and upstream demo resource requirements before starting this multi-service workload. This portfolio does not assert a tested local memory budget."
+        },
+        {
+          "title": "Catalog development and CI",
+          "detail": "The reviewed workflow selects Go 1.22 and separate build/test/lint jobs. Image publication and repository writes require credentials. Review inherited image namespaces, workflow author settings, permissions, and the forced main push before enabling the workflow in an owned environment."
+        },
+        {
+          "title": "Kubernetes is a separate deployment path",
+          "detail": "Use a compatible cluster and explicit application configuration. The application bundle refers to an OTLP Collector but does not supply Collector/Prometheus/Jaeger/Grafana backend workloads; provision and verify those separately rather than assuming Compose services appear in Kubernetes."
+        }
+      ],
+      "walkthrough": [
+        {
+          "title": "Locate the upstream application boundary",
+          "detail": "Astronomy Shop is the OpenTelemetry demo application, retained through the creator’s course repository. Its polyglot services supply an existing workload for delivery and observability practice. They are not presented as independently authored microservices.",
+          "source": "README.md"
+        },
+        {
+          "title": "Trace the focused catalog workflow",
+          "detail": "A pull request triggers Go build/test commands and a separate lint job. The Docker job is not gated by the independent lint job. No catalog _test.go files were found at the reviewed revision, so a successful go test command alone would not establish useful test coverage.",
+          "source": ".github/workflows/ci.yaml"
+        },
+        {
+          "title": "Understand the image and manifest update",
+          "detail": "The catalog image is published with a run-ID tag and the workflow updates a dedicated deployment manifest before force-pushing main. It does not run kubectl apply or reconcile the cluster. The complete application bundle retains a separate upstream catalog image reference.",
+          "source": ".github/workflows/ci.yaml"
+        },
+        {
+          "title": "Inspect application-side telemetry wiring",
+          "detail": "Kubernetes application manifests configure OTLP destinations such as opentelemetry-demo-otelcol. A destination environment variable expresses where instrumentation should send data; it is not proof that the receiver exists or samples arrive.",
+          "source": "kubernetes/complete-deploy.yaml"
+        },
+        {
+          "title": "Follow the Compose telemetry pipelines",
+          "detail": "The Collector receives OTLP signals and additional metrics, transforms/batches traces, and exports traces to Jaeger/debug/spanmetrics. Metrics, including span-derived metrics, go through OTLP HTTP to Prometheus/debug. Logs go to OpenSearch/debug. These are separate signal paths, not one stream sent to every backend.",
+          "source": "src/otel-collector/otelcol-config.yml"
+        },
+        {
+          "title": "Connect backends to investigation views",
+          "detail": "Grafana provisions Prometheus, Jaeger, and OpenSearch data sources. Use a generated request to correlate service/resource labels, trace spans, metrics, and logs if running the demo. Live examples and measured gains remain unverified until captured from an actual run.",
+          "source": "src/grafana/provisioning/datasources/default.yaml"
+        }
+      ],
+      "commands": [
+        {
+          "title": "Inspect the Compose service set",
+          "detail": "From the repository root with its environment defaults available. This renders service names without starting the distributed application.",
+          "code": "docker compose config --services\ngit show HEAD:src/otel-collector/otelcol-config.yml",
+          "source": "docker-compose.yml"
+        },
+        {
+          "title": "Inspect catalog validation inputs",
+          "detail": "Read the exact workflow and package build before choosing compatible tooling. This documentation has not executed the source project or recorded test results.",
+          "code": "git show HEAD:.github/workflows/ci.yaml\ngit show HEAD:src/product-catalog/Dockerfile",
+          "source": ".github/workflows/ci.yaml"
+        },
+        {
+          "title": "Compare the two Kubernetes image paths",
+          "detail": "The workflow-targeted catalog manifest and complete application bundle can diverge. Inspect both before selecting an application source of truth.",
+          "code": "git show HEAD:kubernetes/productcatalog/deploy.yaml\ngit show HEAD:kubernetes/complete-deploy.yaml",
+          "source": "kubernetes/complete-deploy.yaml"
+        }
+      ],
+      "troubleshooting": [
+        {
+          "symptom": "Kubernetes services run but telemetry is missing",
+          "checks": "Resolve the configured Collector hostname, verify that a receiver and backend workloads actually exist, and inspect OTLP ports/protocols. Compose backend definitions do not provision corresponding Kubernetes resources."
+        },
+        {
+          "symptom": "Traces arrive but metrics or logs do not",
+          "checks": "Inspect the Collector service.pipelines entries independently. Confirm Prometheus OTLP HTTP receiver settings for metrics and the OpenSearch exporter for logs. Jaeger is the trace destination, not the destination for every signal."
+        },
+        {
+          "symptom": "Publishing an image has no effect on the cluster",
+          "checks": "Compare the dedicated manifest to the complete bundle, then check which source was actually applied. The workflow updates Git but does not perform a Kubernetes rollout."
+        },
+        {
+          "symptom": "The CI badge looks healthy but this fork has no runs",
+          "checks": "Check the owner/repository in badge URLs and open the fork’s Actions history. The inherited README badges refer to upstream activity and do not establish personal execution."
+        },
+        {
+          "symptom": "The demo requires broad host access",
+          "checks": "Inspect the Collector root user, host filesystem and Docker socket mounts, and demo transport settings. These choices support demonstration collection but require a separate hardening design before production use."
+        }
+      ]
+    }
+  }
+}
