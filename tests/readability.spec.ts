@@ -125,8 +125,13 @@ for (const viewport of viewports) {
       await dialog.getByRole('link', { name: 'View full repository' }).scrollIntoViewIfNeeded();
       await expect(dialog.getByRole('link', { name: 'View full repository' })).toBeVisible();
       await page.keyboard.press('Escape');
+      // Native dialog close events are asynchronous. Wait for the case study
+      // to unmount and restore focus before issuing a different dialog shortcut.
+      await expect(dialog).not.toBeAttached();
+      await expect(page.getByRole('button', { name: 'Read Space Cargo case study', exact: true })).toBeFocused();
       await page.keyboard.press('Control+k');
       const search = page.getByRole('dialog', { name: 'Search this portfolio' });
+      await expect(search).toBeVisible();
       if (adjustment === 'resize') await doubleText(page, 'dialog');
       await assertReadable(page, 'dialog');
       await search.getByRole('textbox').fill('contact');
