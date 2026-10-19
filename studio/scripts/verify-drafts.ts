@@ -18,8 +18,8 @@ try {
 if (await client.getDocument(id)) throw new Error('Temporary draft was not deleted.');
 const counts = await client.fetch('{"drafts":count(*[_type in ["portfolioSettings","portfolioProject"] && _id in path("drafts.**")]),"published":count(*[_type in ["portfolioSettings","portfolioProject"] && !(_id in path("drafts.**"))])}');
 console.log(JSON.stringify({ createUpdateReadDelete: 'passed', draftExcludedFromPublished: true, temporaryDraftDeleted: true, remainingContent: counts }, null, 2));
-// Verify imported drafts against the exact public build projection without
-// publishing them, persisting a preview file, or changing the public build.
-const previewQuery = publishedQuery.replace('_id == "portfolio-settings"', '_id == "drafts.portfolio-settings"').replace('!(_id in path("drafts.**"))', '_id in path("drafts.**")');
-const snapshot = snapshotFromSanity(await client.fetch(previewQuery));
-console.log(`Imported draft build projection validated: profile and ${snapshot.projects.length} projects, including documentation and uploaded media.`);
+// The authenticated drafts perspective overlays draft edits on published data.
+// This also works after the initial drafts have been published. Nothing is
+// published or persisted to the public build by this verification script.
+const snapshot = snapshotFromSanity(await client.withConfig({ perspective: 'drafts' }).fetch(publishedQuery));
+console.log(`Editorial build projection validated: profile and ${snapshot.projects.length} projects, including documentation and uploaded media.`);

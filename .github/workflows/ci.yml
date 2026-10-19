@@ -2,7 +2,7 @@ name: Build portfolio
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, release/sanity-netlify]
   pull_request:
 
 permissions:
@@ -19,6 +19,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: npm --prefix studio ci --include=dev
+      - run: npm run cms:typecheck
+      - run: npm run cms:build
       - run: npx playwright install --with-deps chromium
       - run: npm test
       - name: Save browser diagnostics

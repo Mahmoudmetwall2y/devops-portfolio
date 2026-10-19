@@ -25,7 +25,7 @@ npm run build
 npm run preview
 ```
 
-The production files are written to `dist/`. Preview normally runs at `http://127.0.0.1:4173`. `npm run lint` is an alias for the TypeScript check. The GitHub Actions workflow checks the production build and runs browser tests on pull requests and pushes to `main` or `master`; it saves diagnostics on failure and does not publish the site.
+The production files are written to `dist/`. Preview normally runs at `http://127.0.0.1:4173`. `npm run lint` is an alias for the TypeScript check. The GitHub Actions workflow checks both the public and Studio builds and runs browser tests on pull requests and pushes to `main`, `master`, or `release/sanity-netlify`; it saves diagnostics on failure. Netlify separately deploys pushes to its configured production branch.
 
 Browser checks use Playwright and axe to cover the interactive release demo, project case studies and keyboard focus, keyboard search, filters, toolkit, mobile navigation, contact clipboard, link destinations, responsive widths, motion playback and preferences, and automated accessibility. Normal animation and reduced-motion behavior are tested separately, including live preference changes and replay. Run:
 

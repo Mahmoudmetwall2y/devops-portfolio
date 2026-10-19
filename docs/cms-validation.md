@@ -1,6 +1,6 @@
 # CMS implementation and validation
 
-Validated locally on 19 October 2026, on branch `fix/motion-accessibility`. No commit, push, pull request, deployment or DNS change was made.
+Pre-deployment baseline validated locally on 19 October 2026, on branch `fix/motion-accessibility`. At that stage no commit, push, pull request, deployment or DNS change had been made. The subsequently approved deployment is recorded in [netlify-deployment.md](./netlify-deployment.md).
 
 ## Implementation
 

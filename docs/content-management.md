@@ -40,7 +40,7 @@ There is no automatic seed fallback during a CMS build: missing profile content,
 
 ## Connect Netlify after review
 
-The code is prepared; no Netlify site, live webhook, DNS record or deployment has been created by this task.
+The approved release is now connected to Netlify and Sanity. Current deployment details and the remaining Hostinger DNS step are recorded in [netlify-deployment.md](./netlify-deployment.md). The instructions below describe the setup for reference and future reconnection.
 
 1. Review the local implementation and Sanity drafts. Approve publishing the intended profile and projects, then publish them in Studio before the first CMS deployment. A first build with only drafts fails deliberately.
 2. After approval to push and deploy, connect the approved Git branch to a Netlify site. `netlify.toml` sets build command `npm run build:netlify`, output `dist`, Node 24, `CONTENT_SOURCE=sanity`, and the project/dataset IDs. The command builds both the public site and admin, installing the separate Studio lockfile first.
