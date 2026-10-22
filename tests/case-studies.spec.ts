@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 // Expected paths were independently checked against GitHub's Contents API.
 const cases = [
-  { title: '3-Tier User Platform', id: 'three-tier', repo: '3-Tier-User-Platform-Project', revision: '8cf00a4166acb21ef791f48234e77951eb43cb37', status: 'Configuration reviewed', paths: ['.github/workflows/qa-cicd.yml', '.github/workflows/prod-cd.yaml', 'Dockerfile', 'server/server.js', 'k8-manifests/prod/app-deployment.yaml'] },
+  { title: '3-Tier User Platform', id: 'three-tier', repo: '3-Tier-Application', revision: 'bc58f64225a42d68049280efaf2f82c854d837fd', status: 'Pipeline execution recorded', paths: ['.github/workflows/qa-cicd.yml', '.github/workflows/prod-cd.yaml', 'Dockerfile', 'server/server.js', 'k8-manifests/prod/app-deployment.yaml'] },
   { title: 'Space Cargo', id: 'space-cargo', repo: 'DEPI-Graduation-Project-', revision: 'efa13ecd127257130c6aca4d5410ae750e164d5a', status: 'CI execution verified', paths: ['infrastructure/terraform/EKS.tf', 'infrastructure/ansible/playbooks/deploy-eks.yml', '.github/workflows/ci.yaml', 'infrastructure/helm/space-cargo/templates/deployments.yaml', 'infrastructure/helm/space-cargo/templates/authorization-policy.yaml', 'infrastructure/monitoring/prometheus-server/prometheus-server.yaml', 'infrastructure/monitoring/monitoring-server/grafana/dashboards/space-cargo/overview.json', 'infrastructure/helm/space-cargo/templates/istio.yaml', 'infrastructure/helm/space-cargo/values.yaml'] },
   { title: 'Ultimate DevOps', id: 'ultimate-devops', repo: 'ultimate-devops-project-demo', revision: 'c9f81edab0792575062681e6f4895536bba492d2', status: 'Configuration reviewed', paths: ['.github/workflows/ci.yaml', 'kubernetes/complete-deploy.yaml', 'src/product-catalog/Dockerfile', 'docker-compose.yml', 'src/otel-collector/otelcol-config.yml', 'src/grafana/provisioning/datasources/default.yaml'] },
 ];
@@ -49,7 +49,7 @@ for (const project of cases) {
         await expect(dialog.locator('.case-review-status > span')).toHaveText(project.status);
         await expect(dialog.getByRole('link', { name: `Reviewed revision ${project.revision.slice(0, 7)}` })).toHaveAttribute('href', `https://github.com/Mahmoudmetwall2y/${project.repo}/commit/${project.revision}`);
         const sources = await dialog.locator('.evidence-list a').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
-        expect(sources).toEqual(project.paths.map((path) => `https://github.com/Mahmoudmetwall2y/${project.repo}/blob/main/${path}`));
+        expect(sources).toEqual(expect.arrayContaining(project.paths.map((path) => `https://github.com/Mahmoudmetwall2y/${project.repo}/blob/main/${path}`)));
         const figure = dialog.getByRole('figure');
         await expect(figure).toHaveAccessibleName(/SIMPLIFIED CONFIGURATION VIEW/);
         expect(await figure.locator('.case-architecture-node').count()).toBeGreaterThanOrEqual(6);
@@ -84,7 +84,7 @@ test('course context, upstream attribution, and verified CI remain separate', as
     } else {
       await expect(dialog.locator('.case-learning-context')).toContainText('Hands-on Udemy course reproduction');
       await expect(dialog.locator('.project-foundation a')).toHaveAttribute('href', project.id === 'three-tier' ? 'https://github.com/jaiswaladi246/3-Tier-User-Platform-Project' : 'https://github.com/iam-veeramalla/ultimate-devops-project-demo');
-      await expect(dialog.locator('.case-content')).toContainText('zero runs');
+      await expect(dialog.locator('.case-content')).toContainText(project.id === 'three-tier' ? 'Docker Hub login' : 'zero runs');
     }
     if (project.id === 'ultimate-devops') {
       await expect(dialog.getByRole('figure')).toContainText('Docker Compose signal flow');

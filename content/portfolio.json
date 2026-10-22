@@ -12,7 +12,7 @@
     "githubUrl": "https://github.com/Mahmoudmetwall2y",
     "linkedinUrl": "https://www.linkedin.com/in/mahmoudmetwall2y",
     "resumeUrl": "/assets/mahmoud-metwally-cv.pdf",
-    "siteUrl": "https://mahmoudmetwall2y.online",
+    "siteUrl": "https://mahmoudmetwall2y.tech",
     "photo": {
       "url": "/assets/mahmoud.jpg",
       "alt": "Mahmoud Metwally, Cloud and DevOps Engineer"
@@ -116,7 +116,7 @@
       "category": "DEVSECOPS / CLOUD DELIVERY",
       "kind": "DEVSECOPS CONFIGURATION",
       "summary": "A configured delivery journey: security scanning, container builds, and separate QA and production manifests for a React, Express, and MySQL platform.",
-      "description": "A user-management application with three logical layers: React for the interface, Express for the API, and MySQL for user records. This case study examines the container packaging and environment-specific delivery configuration available in my fork.",
+      "description": "A user-management application with three logical layers: React for the interface, Express for the API, and MySQL for user records. This case study follows my hands-on DevSecOps reproduction and the delivery workflow in the updated repository.",
       "tags": [
         "AWS EKS",
         "Kubernetes",
@@ -125,7 +125,7 @@
         "Trivy",
         "SonarQube"
       ],
-      "repo": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project",
+      "repo": "https://github.com/Mahmoudmetwall2y/3-Tier-Application",
       "challenge": "Make application changes traceable across QA and production while collecting security findings and separating deployment credentials. The important distinction is between a check that produces a report and a check that actually blocks a release.",
       "approach": [
         "In the reproduced setup, the Dockerfile builds the React client into client/public, copies that output into Express, and runs the combined application as a non-root user.",
@@ -135,29 +135,39 @@
       ],
       "evidence": [
         {
+          "label": "Recorded DevSecOps pipeline run",
+          "detail": "Latest run completed the security, lint, test, build, and SonarQube stages before Docker Hub login stopped publication.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/actions/runs/38465868490"
+        },
+        {
+          "label": "My pipeline change",
+          "detail": "Latest personal commit renamed the pipeline to DevSecOps CICD Pipeline.",
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/commit/bc58f64225a42d68049280efaf2f82c854d837fd"
+        },
+        {
           "label": "QA delivery and security checks",
           "detail": "Job dependencies, advisory scans, SBOM steps, image publishing, OIDC, and rollout commands.",
-          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/.github/workflows/qa-cicd.yml"
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/blob/main/.github/workflows/qa-cicd.yml"
         },
         {
           "label": "Production delivery",
           "detail": "Pull latest, retag an image, update the production manifest, and request an EKS deployment.",
-          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/.github/workflows/prod-cd.yaml"
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/blob/main/.github/workflows/prod-cd.yaml"
         },
         {
           "label": "Application packaging",
           "detail": "One Node.js image serves the built React client through Express, with a non-root runtime.",
-          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/Dockerfile"
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/blob/main/Dockerfile"
         },
         {
           "label": "Application and database boundary",
           "detail": "User CRUD endpoints, static client serving, and the MySQL connection; database values are not reproduced here.",
-          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/server/server.js"
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/blob/main/server/server.js"
         },
         {
           "label": "Environment configuration",
           "detail": "Production namespace and Secret references; no health probes or resource requests are declared.",
-          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-User-Platform-Project/blob/main/k8-manifests/prod/app-deployment.yaml"
+          "url": "https://github.com/Mahmoudmetwall2y/3-Tier-Application/blob/main/k8-manifests/prod/app-deployment.yaml"
         }
       ],
       "architecture": [
@@ -177,9 +187,9 @@
         "url": "https://github.com/jaiswaladi246/3-Tier-User-Platform-Project"
       },
       "caseStudy": {
-        "revision": "8cf00a4166acb21ef791f48234e77951eb43cb37",
-        "status": "Configuration reviewed",
-        "contribution": "I recreated this setup hands-on while following an Udemy course and used the creator’s fork to organize the work. My focus was container packaging and the DevOps delivery workflow, rather than authoring the React/Express application. The public fork matches upstream at this revision; my explanation establishes the learning context, while personal execution still needs run or deployment records.",
+        "revision": "bc58f64225a42d68049280efaf2f82c854d837fd",
+        "status": "Pipeline execution recorded",
+        "contribution": "I recreated and iterated on this setup hands-on while following an Udemy course. The updated repository is under my account, and my recent commits rename the Sonar project and pipeline. My focus was container packaging, security checks, quality checks, and the DevSecOps delivery workflow rather than authoring the React/Express application foundation.",
         "architecture": {
           "description": "Three logical application tiers, not three separate application containers. Express serves the built React assets and calls MySQL. The manifests refer to a mysql Service and mysql-secret that must be supplied separately.",
           "lanes": [
@@ -250,11 +260,12 @@
           "Security reports and requested rollout status are the available delivery signals. No project-specific metrics, trace pipeline, dashboards, or alert rules are present in this repository."
         ],
         "verification": {
-          "summary": "Source configuration reviewed; the GitHub Actions API returned zero runs for this fork. The minimal README contains no deployment demonstration. This case study does not claim a successful pipeline or running EKS application.",
+          "summary": "The updated repository records 12 workflow runs. In the latest recorded run, Gitleaks, Checkov, Trivy, lint, client/server tests, client build, and the SonarQube quality gate completed successfully; Docker Hub authentication failed before image publication, so the image push and Kubernetes deployment are not verified.",
           "limitations": [
-            "Default Git context supplies the image build source, but the source-SBOM path has no checked-out source tree in its job.",
-            "MySQL workload/Secret provisioning and namespace/bootstrap resources are external prerequisites.",
-            "The public fork preserves the course foundation unchanged; it does not independently record my hands-on execution."
+            "The latest pipeline run stopped at Docker Hub login; image publication and deployment jobs were skipped.",
+            "The recorded workflow proves execution of the configured checks, not a successful production deployment or running EKS application.",
+            "MySQL workload/Secret provisioning and namespace/bootstrap resources remain external prerequisites.",
+            "The React/Express application foundation remains credited to the original creator; my repository history and pipeline changes are the personal contribution boundary."
           ]
         },
         "lessons": [

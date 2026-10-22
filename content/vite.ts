@@ -20,7 +20,7 @@ export async function portfolioContentPlugin(env: Record<string, string | undefi
     .replace(/(<meta property="og:type" content=")[^"]*/, (_, prefix) => `${prefix}${article ? 'article' : 'website'}`)
     .replace(/(<meta property="og:url" content=")[^"]*/, (_, prefix) => `${prefix}${escape(url)}`)
     .replace(/(<link rel="canonical" href=")[^"]*/, (_, prefix) => `${prefix}${escape(url)}`)
-    .replaceAll('https://mahmoudmetwall2y.online', origin);
+    .replaceAll('https://mahmoudmetwall2y.tech', origin);
   return {
     name: 'portfolio-published-content',
     resolveId(id) { if (Object.hasOwn(modules, id)) return `\0${id}`; },

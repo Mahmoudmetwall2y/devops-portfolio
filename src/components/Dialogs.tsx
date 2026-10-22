@@ -28,7 +28,7 @@ export function Modal({ label, onClose, children, className = '', fallbackFocusS
       restoreFocus();
     };
   }, []);
-  return <dialog ref={ref} aria-label={label} className={`modal ${className}`} onClose={(event) => { if (!event.currentTarget.open) onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}><div className="modal-inner">{children}</div></dialog>;
+  return <dialog ref={ref} aria-label={label} className={`modal ${className}`} onCancel={(event) => { event.preventDefault(); onClose(); }} onClose={(event) => { if (!event.currentTarget.open) onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}><div className="modal-inner">{children}</div></dialog>;
 }
 
 export function ProjectDialog({ project, onClose, fallbackFocusSelector }: { project: Project; onClose: () => void; fallbackFocusSelector?: string }) {

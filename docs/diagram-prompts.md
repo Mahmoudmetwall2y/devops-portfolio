@@ -61,7 +61,7 @@ with the explicit label “Configured commands; fork execution not verified”.
 
 Footer notes: “Logical tiers: React / Express / MySQL”.
 “Hands-on course reproduction; upstream application foundation credited”.
-“Reviewed source: 8cf00a4”.
+“Reviewed source: bc58f64”.
 Do not add Terraform, database provisioning, probes, resource budgets, an installed
 monitoring stack, enforced quality gates, automatic rollback, or production proof.
 ```

@@ -149,7 +149,7 @@ test('profile, repository, and contact links point to the intended destinations'
   await expect(page.getByRole('link', { name: /The professional side of me/ })).toHaveAttribute('href', linkedin);
   await expect(page.locator('.contact-email')).toHaveAttribute('href', 'mailto:mahmoudmetwall2y@gmail.com');
   const repos = [
-    `${github}/3-Tier-User-Platform-Project`,
+    `${github}/3-Tier-Application`,
     `${github}/DEPI-Graduation-Project-`,
     `${github}/ultimate-devops-project-demo`,
   ];
@@ -160,7 +160,10 @@ test('profile, repository, and contact links point to the intended destinations'
     await expect(dialog.getByRole('link', { name: 'View full repository' })).toHaveAttribute('href', repos[index]);
     const evidence = await dialog.locator('.evidence-list a').evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
     expect(evidence.length).toBeGreaterThanOrEqual(3);
-    expect(evidence.every((url) => url.startsWith(`${repos[index]}/blob/main/`))).toBe(true);
+    expect(evidence.every((url) => {
+      const path = url.slice(repos[index].length);
+      return path.startsWith('/blob/main/') || path.startsWith('/commit/') || path.startsWith('/actions/runs/');
+    })).toBe(true);
     await page.keyboard.press('Escape');
   }
 });

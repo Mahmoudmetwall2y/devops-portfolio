@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUp, ArrowUpRight, Check, Code2, Copy, GitBranch, Menu, Radio, RotateCcw, Terminal, X } from 'lucide-react';
 import { projects, projectPath, type Project } from './data/projects';
 import { profile, aboutParagraphs, contactEmail, githubUrl, linkedinUrl, resumeUrl } from './data/profile';
@@ -13,7 +13,20 @@ import { MagneticLink, MotionCursor, NameLine, OrbitBadge, ShellCommand, TechMar
 import { usePortfolioMotion } from './hooks/usePortfolioMotion';
 import { useReducedMotion } from './hooks/useReducedMotion';
 
-const navigation = [{ label: 'Work', id: 'work' }, { label: 'About', id: 'about' }, { label: 'Experience', id: 'experience' }, { label: 'Toolkit', id: 'toolkit' }];
+const navigation = [{ label: 'Work', id: 'work' }, { label: 'About', id: 'about' }, { label: 'Experience', id: 'experience' }, { label: 'Toolkit', id: 'toolkit' }, { label: 'Services', id: 'services' }];
+
+const capabilityEvidence = [
+  { title: 'Cloud & infrastructure', detail: 'Provisioning, platform boundaries, and Linux operations.', projects: ['space-cargo', 'three-tier'] },
+  { title: 'Containers & orchestration', detail: 'Packaging, Kubernetes workloads, Helm, and controlled rollouts.', projects: ['three-tier', 'space-cargo', 'ultimate-devops'] },
+  { title: 'Delivery & automation', detail: 'Checks, image delivery, manifest updates, and traceable changes.', projects: ['three-tier', 'space-cargo', 'ultimate-devops'] },
+  { title: 'Visibility & reliability', detail: 'Metrics, dashboards, traces, logs, and the path from signal to action.', projects: ['space-cargo', 'ultimate-devops'] },
+];
+
+const services = [
+  { title: 'Delivery systems', detail: 'Design CI/CD workflows with useful checks, traceable artifacts, and clear release boundaries.', projects: ['three-tier', 'space-cargo'] },
+  { title: 'Cloud & Kubernetes platforms', detail: 'Turn infrastructure, workload configuration, and operational prerequisites into a system the next engineer can follow.', projects: ['space-cargo', 'ultimate-devops'] },
+  { title: 'Observability foundations', detail: 'Connect metrics, traces, logs, and dashboards so teams can investigate behavior instead of guessing.', projects: ['space-cargo', 'ultimate-devops'] },
+];
 
 
 function ProjectCard({ project, index, onOpen }: { project: Project; index: number; onOpen: () => void }) {
@@ -21,7 +34,7 @@ function ProjectCard({ project, index, onOpen }: { project: Project; index: numb
     <article className={`project-card project-${project.accent}`} style={{ zIndex: index + 1 }}>
       <button type="button" className="project-visual-button" onClick={onOpen} aria-label={`Read ${project.title} case study`}>{project.image ? <img className="project-cover-image" src={project.image.url} alt={project.image.alt} loading="lazy" /> : <ProjectGraphic id={project.graphic ?? project.id} />}<span className="visual-open"><ArrowUpRight size={20} /><span>EXPLORE</span></span></button>
       <div className="project-copy">
-        <div className="project-meta"><span>/{project.number}</span><span>{project.kind}</span></div>
+        <div className="project-meta"><span>/{project.number}</span><span>{project.kind}</span><span className="project-status"><i aria-hidden="true" />{project.caseStudy.status}</span></div>
         <a className="project-title-button" href={projectPath(project)}><h3>{project.title}</h3><ArrowUpRight size={30} strokeWidth={1.4} /></a>
         <p>{project.summary}</p>
         <div className="tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
@@ -91,19 +104,21 @@ export default function App() {
     return () => { observer.disconnect(); window.removeEventListener('resize', update); grid.classList.remove('projects-flow'); };
   }, [filter]);
 
-  useEffect(() => {
-    function handleKey(event: KeyboardEvent) {
+  // A global listener must see the latest committed dialog state, even before
+  // passive effects have had a chance to rebind after a modal closes.
+  const handleKey = useEffectEvent((event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         if (!selectedProject) { setTerminalOpen(false); setCommandOpen((open) => !open); }
       }
       if (event.key === 'Escape') setMenuOpen(false);
-    }
+  });
+  useEffect(() => {
     window.addEventListener('keydown', handleKey);
     const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) setActiveSection(entry.target.id); }); }, { rootMargin: '-15% 0px -60% 0px' });
     document.querySelectorAll('main > section[id]').forEach((section) => observer.observe(section));
     return () => { window.removeEventListener('keydown', handleKey); observer.disconnect(); };
-  }, [selectedProject]);
+  }, []);
 
   useEffect(() => () => { if (copyTimeout.current) clearTimeout(copyTimeout.current); }, []);
   function replayIntro() {
@@ -122,7 +137,7 @@ export default function App() {
   }
 
   const filteredProjects = projects.filter((project) => filter === 'all' || project.filters.includes(filter as 'cloud' | 'delivery'));
-  const lightHeader = ['about', 'experience', 'toolkit', 'lab', 'contact'].includes(activeSection);
+  const lightHeader = ['about', 'experience', 'toolkit', 'services', 'lab', 'contact'].includes(activeSection);
 
   return (
     <div ref={root} className={`portfolio-root ${reducedMotion ? 'motion-reduced' : 'motion-enabled'}`}>
@@ -141,7 +156,7 @@ export default function App() {
           <div className="hero-stage-inner page-width"><TerminalChrome onOpen={() => { setMenuOpen(false); setTerminalOpen(true); }} />
             <div className="hero-topline hero-intro"><p className="eyebrow"><span className="live-dot" /> {profile.hero.role}</p><span className="eyebrow">{profile.hero.location}</span></div>
             <div className="hero-main">
-              <div className="hero-identity"><div className="identity-command hero-intro"><span>mahmoud@linux</span><span>:~$</span><span>whoami</span><i aria-hidden="true" /></div><h1 className="hero-name" aria-label={profile.displayName}><NameLine text={profile.nameLines[0]} /><NameLine text={profile.nameLines[1]} outlined /></h1><div className="hero-intro"><h2 className="hero-promise">{profile.hero.headline[0]}<br /><span>{profile.hero.headline[1]}</span></h2><p className="hero-description">{profile.hero.description}</p><div className="hero-actions"><MagneticLink href="#work" className="button button-accent">Explore my work <ArrowDown size={18} /></MagneticLink><MagneticLink className="text-link" href={githubUrl} target="_blank" rel="noreferrer"><GithubIcon width={19} height={19} /> GitHub <ArrowUpRight size={15} /></MagneticLink><a className="hero-cv text-link" href={resumeUrl} download="Mahmoud-Metwally-CV.pdf">Download CV <ArrowDownRight size={16} /></a></div><div className="hero-proof" aria-label={profile.hero.proofLabel}>{profile.hero.proof.map(item => <span key={item.label}><strong>{item.value}</strong> {item.label}</span>)}</div></div></div>
+              <div className="hero-identity"><div className="identity-command hero-intro"><span>mahmoud@linux</span><span>:~$</span><span>whoami</span><i aria-hidden="true" /></div><h1 className="hero-name" aria-label={profile.displayName}><NameLine text={profile.nameLines[0]} /><NameLine text={profile.nameLines[1]} outlined /></h1><div className="hero-intro"><h2 className="hero-promise">{profile.hero.headline[0]}<br /><span>{profile.hero.headline[1]}</span></h2><p className="hero-description">{profile.hero.description}</p><p className="hero-positioning">DevOps engineering focused on Linux infrastructure, Kubernetes platforms, and dependable delivery.</p><div className="hero-actions"><MagneticLink href="#work" className="button button-accent">Explore my work <ArrowDown size={18} /></MagneticLink><MagneticLink className="text-link" href={githubUrl} target="_blank" rel="noreferrer"><GithubIcon width={19} height={19} /> GitHub <ArrowUpRight size={15} /></MagneticLink><a className="hero-cv text-link" href={resumeUrl} download="Mahmoud-Metwally-CV.pdf">Download CV <ArrowDownRight size={16} /></a></div><div className="hero-proof" aria-label={profile.hero.proofLabel}>{profile.hero.proof.map(item => <span key={item.label}><strong>{item.value}</strong> {item.label}</span>)}</div></div></div>
               <div className="hero-portrait-scene"><svg className="hero-signal-ring" viewBox="0 0 500 500" aria-hidden="true"><circle className="signal-ring-track" cx="250" cy="250" r="226" /><g className="signal-ring-orbit"><circle className="signal-ring-dashes" cx="250" cy="250" r="226" /><circle className="signal-ring-dot" cx="250" cy="24" r="7" /></g><g className="signal-ring-orbit orbit-reverse"><circle className="signal-ring-track" cx="250" cy="250" r="195" /><circle className="signal-ring-dot secondary-dot" cx="250" cy="445" r="5" /></g></svg><div className="portrait-halo" aria-hidden="true" /><div className="hero-portrait-parallax"><div className="hero-portrait-frame"><img src={profile.photo.url} alt={profile.photo.alt} width={460} height={460} fetchPriority="high" /></div></div><OrbitBadge /><span className="hero-orbit-label orbit-label-one"><span>01</span> CLOUD / AWS</span><span className="hero-orbit-label orbit-label-two"><span>02</span> AUTOMATE / SHIP</span><span className="hero-orbit-label orbit-label-three"><span>03</span> OBSERVE / IMPROVE</span><span className="hero-portrait-caption hero-intro">A SYSTEMS THINKER.<br />A HANDS-ON BUILDER.</span></div>
             </div>
             <div className="hero-bottom hero-intro"><div className="hero-socials"><a href={linkedinUrl} target="_blank" rel="noreferrer" aria-label="Mahmoud on LinkedIn"><LinkedInIcon width={17} height={17} /></a><a href={githubUrl} target="_blank" rel="noreferrer" aria-label="Mahmoud on GitHub"><GithubIcon width={18} height={18} /></a><span>LET’S MAKE THE NEXT RELEASE A GOOD ONE.</span></div><div className="hero-motion-actions"><button className="replay-intro" type="button" disabled={reducedMotion} onClick={replayIntro}><RotateCcw size={14} />Replay intro</button><a href="#work" className="scroll-cue" aria-label="Scroll to selected work"><span>SCROLL TO DISCOVER</span><span className="scroll-mouse"><i /></span></a></div></div>
@@ -151,7 +166,7 @@ export default function App() {
 
         <section className="work-section dark-section" id="work"><div className="page-width">
           <div className="section-topline" data-reveal><span className="eyebrow">01 / SELECTED WORK</span><ShellCommand command="ls ./projects" /></div>
-          <div className="section-heading work-heading" data-reveal><h2>Under the hood.<br /><span>Beyond the deploy.</span></h2><div><p>The platforms, pipelines, and moving parts.<br />Explore the thinking behind each implementation.</p><div className="project-filters" role="group" aria-label="Filter projects">{[{ value: 'all', label: 'All work', count: projects.length }, { value: 'cloud', label: 'Cloud', count: projects.filter(item => item.filters.includes('cloud')).length }, { value: 'delivery', label: 'Delivery', count: projects.filter(item => item.filters.includes('delivery')).length }].map((item) => <button key={item.value} type="button" aria-pressed={filter === item.value} className={filter === item.value ? 'filter-active' : ''} onClick={() => setFilter(item.value)}>{item.label}<sup>{String(item.count).padStart(2, '0')}</sup></button>)}</div></div></div>
+          <div className="section-heading work-heading" data-reveal><h2>Under the hood.<br /><span>Beyond the deploy.</span></h2><div><p>The platforms, pipelines, and moving parts.<br />Explore the thinking behind each implementation.</p><p className="work-evidence-note">Every case study separates attributed work, recorded execution, and open verification questions.</p><div className="project-filters" role="group" aria-label="Filter projects">{[{ value: 'all', label: 'All work', count: projects.length }, { value: 'cloud', label: 'Cloud', count: projects.filter(item => item.filters.includes('cloud')).length }, { value: 'delivery', label: 'Delivery', count: projects.filter(item => item.filters.includes('delivery')).length }].map((item) => <button key={item.value} type="button" aria-pressed={filter === item.value} className={filter === item.value ? 'filter-active' : ''} onClick={() => setFilter(item.value)}>{item.label}<sup>{String(item.count).padStart(2, '0')}</sup></button>)}</div></div></div>
           <div className="projects-grid" aria-live="polite">{filteredProjects.length === 0 && <p className="projects-empty">No projects to show here yet.</p>}{filteredProjects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} onOpen={() => setSelectedProject(project)} />)}</div>
           <div className="work-bottom"><span><GitBranch size={15} /> THE DETAILS ARE IN THE CODE.</span><a className="text-link" href={`${githubUrl}?tab=repositories`} target="_blank" rel="noreferrer">More on GitHub <ArrowUpRight size={17} /></a></div>
         </div></section>
@@ -165,9 +180,11 @@ export default function App() {
 
         <section className="toolkit-section" id="toolkit"><div className="page-width"><div className="section-topline" data-reveal><span className="eyebrow">04 / TOOLS WITH A PURPOSE</span><ShellCommand command="cat ./toolkit.conf" /></div><div className="section-heading toolkit-heading" data-reveal><h2>From the first commit<br />to what comes next.</h2><p>A practical toolkit for the whole journey.<br />Pick a layer to look a little closer.</p></div><div className="toolkit-list">{toolkit.map((item) => { const Icon = item.icon; const expanded = expandedTool === item.number; return <div key={item.number} className={`toolkit-row ${expanded ? 'toolkit-expanded' : ''}`}><button type="button" className="toolkit-row-button" aria-expanded={expanded} aria-controls={`tool-${item.number}`} onClick={() => setExpandedTool(expanded ? null : item.number)}><span className="toolkit-number">/{item.number}</span><span className="toolkit-icon"><Icon size={25} strokeWidth={1.4} /></span><span className="toolkit-title"><strong>{item.title}</strong><small>{item.description}</small></span><span className="toolkit-tools">{item.tools.join(' / ')}</span><span className="toolkit-toggle">{expanded ? '−' : '+'}</span></button><div className="toolkit-detail" id={`tool-${item.number}`} hidden={!expanded}><p>{item.detail}</p><div className="tags">{item.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></div></div>; })}</div><div className="toolkit-note"><Terminal size={16} /><p>Tools change. The goal stays the same: systems people can trust.</p></div></div></section>
 
-        <section className="playground-section" id="lab"><div className="page-width playground-grid"><div className="playground-copy" data-reveal><span className="eyebrow">05 / THE RELEASE LAB</span><h2>A small change.<br /><span>A smooth release.</span></h2><p>A little glimpse into a good day in DevOps. Follow a change through source control, build, deployment, and observability.</p><span className="playground-note"><ArrowRight size={17} /> TRY THE INTERACTIVE DEMO</span></div><ReleaseLab /></div></section>
+        <section className="services-section" id="services"><div className="page-width"><div className="section-topline" data-reveal><span className="eyebrow">05 / SKILLS WITH PROOF</span><ShellCommand command="./capabilities --evidence" /></div><div className="section-heading services-heading" data-reveal><h2>Capabilities that<br /><span>connect to real work.</span></h2><p>For recruiters: see where each capability appears.<br />For clients: start with the problem you need to solve.</p></div><div className="capability-grid">{capabilityEvidence.map(item => <article className="capability-card" key={item.title} data-reveal><span className="eyebrow">CAPABILITY / {item.projects.length} CASE STUDIES</span><h3>{item.title}</h3><p>{item.detail}</p><div className="capability-links">{item.projects.map(id => { const project = projects.find(candidate => candidate.id === id); return project ? <a key={id} href={projectPath(project)}>{project.title}<ArrowUpRight size={14} aria-hidden="true" /></a> : null; })}</div></article>)}</div><div className="services-intro"><span className="eyebrow">HOW I CAN HELP</span><div className="services-grid">{services.map(service => <article key={service.title}><h3>{service.title}</h3><p>{service.detail}</p><div>{service.projects.map(id => { const project = projects.find(candidate => candidate.id === id); return project ? <a key={id} href={projectPath(project)}>{project.title}<ArrowUpRight size={13} aria-hidden="true" /></a> : null; })}</div></article>)}</div></div></div></section>
 
-        <section className="contact-section" id="contact"><div className="page-width"><div className="section-topline"><span className="eyebrow">06 / THE NEXT CHAPTER</span><ShellCommand command="./contact.sh" /></div><div className="contact-grid"><div><h2>Your next chapter.<br /><span>Let’s build it.</span><ArrowDownRight className="contact-arrow" size={76} strokeWidth={1.25} /></h2><p>A team to join. A platform to build. A pipeline to untangle.<br />If that sounds like your next move, I’d like to hear about it.</p></div><div className="contact-actions"><a href={`mailto:${contactEmail}`} className="contact-email"><span className="eyebrow">DROP ME A LINE</span><span>{contactEmail}<ArrowUpRight size={27} /></span></a><div className="contact-links"><a href={linkedinUrl} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={17} /></a><a href={githubUrl} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={17} /></a><button type="button" onClick={copyEmail}>{copied ? <Check size={15} /> : <Copy size={15} />}{copied ? 'Email copied' : 'Copy email'}</button></div><p className="copy-feedback" aria-live="polite">{copyError ? `Copy unavailable. Email me at ${contactEmail}.` : copied ? 'Ready to paste wherever you like.' : ''}</p></div></div></div></section>
+        <section className="playground-section" id="lab"><div className="page-width playground-grid"><div className="playground-copy" data-reveal><span className="eyebrow">06 / THE RELEASE LAB</span><h2>A small change.<br /><span>A smooth release.</span></h2><p>A little glimpse into a good day in DevOps. Follow a change through source control, build, deployment, and observability.</p><span className="playground-note"><ArrowRight size={17} /> INTERACTIVE SIMULATION / NOT A LIVE DEPLOYMENT</span></div><ReleaseLab /></div></section>
+
+        <section className="contact-section" id="contact"><div className="page-width"><div className="section-topline"><span className="eyebrow">07 / THE NEXT CHAPTER</span><ShellCommand command="./contact.sh" /></div><div className="contact-grid"><div><h2>Your next chapter.<br /><span>Let’s build it.</span></h2><p>A team to join. A platform to build. A pipeline to untangle.<br />If that sounds like your next move, I’d like to hear about it.</p><p className="contact-audience"><strong>Recruiters:</strong> explore the work and download the CV. <strong>Clients:</strong> bring a delivery, platform, or observability problem.</p><ArrowDownRight className="contact-arrow" size={76} strokeWidth={1.25} /></div><div className="contact-actions"><a href={`mailto:${contactEmail}`} className="contact-email"><span className="eyebrow">DROP ME A LINE</span><span>{contactEmail}<ArrowUpRight size={27} /></span></a><div className="contact-links"><a href={linkedinUrl} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={17} /></a><a href={githubUrl} target="_blank" rel="noreferrer">GitHub <ArrowUpRight size={17} /></a><button type="button" onClick={copyEmail}>{copied ? <Check size={15} /> : <Copy size={15} />}{copied ? 'Email copied' : 'Copy email'}</button></div><p className="copy-feedback" aria-live="polite">{copyError ? `Copy unavailable. Email me at ${contactEmail}.` : copied ? 'Ready to paste wherever you like.' : ''}</p></div></div></div></section>
       </main>
 
       <footer className="site-footer page-width"><a className="footer-brand" href="#top"><BrandMark width={28} height={28} /><span>MAHMOUD METWALLY</span></a><span className="footer-note">BUILT WITH INTENTION. © {new Date().getFullYear()}</span><a className="back-to-top" href="#top">BACK TO TOP <ArrowUp size={14} /></a></footer>

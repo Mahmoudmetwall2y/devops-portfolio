@@ -107,6 +107,13 @@ for (const variant of ['edited', 'empty', 'four-projects'] as const) {
         else { await input.fill('open project 1'); await input.press('Enter'); await expect(page.locator('.portfolio-terminal-entry').last()).toContainText('There are no projects to open yet.'); await page.keyboard.press('Escape'); await expect(page.locator('.projects-empty')).toBeVisible(); }
       }
       expect(errors).toEqual([]);
-    } finally { await new Promise<void>((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve())); }
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.httpServer.close(error => error ? reject(error) : resolve());
+        // Assertions have finished. Browser keep-alive connections must not
+        // hold an isolated fixture server open until the test times out.
+        if ('closeAllConnections' in server.httpServer) server.httpServer.closeAllConnections();
+      });
+    }
   });
 }

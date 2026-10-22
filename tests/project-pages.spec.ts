@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { build, preview } from 'vite';
 
 const projects = [
-  { id: 'three-tier', title: '3-Tier User Platform', revision: '8cf00a4166acb21ef791f48234e77951eb43cb37', repo: '3-Tier-User-Platform-Project' },
+  { id: 'three-tier', title: '3-Tier User Platform', revision: 'bc58f64225a42d68049280efaf2f82c854d837fd', repo: '3-Tier-Application' },
   { id: 'space-cargo', title: 'Space Cargo', revision: 'efa13ecd127257130c6aca4d5410ae750e164d5a', repo: 'DEPI-Graduation-Project-' },
   { id: 'ultimate-devops', title: 'Ultimate DevOps', revision: 'c9f81edab0792575062681e6f4895536bba492d2', repo: 'ultimate-devops-project-demo' },
 ];
@@ -35,7 +35,7 @@ for (const project of projects) for (const preference of ['reduce', 'no-preferen
     await expect(page.locator('.doc-masthead')).toHaveCSS('opacity', '1');
     await page.evaluate(() => document.fonts.ready);
     await expect(page).toHaveTitle(`${project.title} — Engineering documentation | Mahmoud Metwally`);
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://mahmoudmetwall2y.online/projects/${project.id}`);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://mahmoudmetwall2y.tech/projects/${project.id}`);
     await expect(page.getByRole('article')).toHaveAccessibleName(`${project.title} documentation`);
     for (const heading of headings) await expect(page.getByRole('heading', { level: 2, name: heading, exact: true })).toHaveCount(1);
     await expect(page.getByRole('figure')).toHaveAccessibleName(/SIMPLIFIED CONFIGURATION VIEW/);
@@ -140,7 +140,7 @@ test('production output has project-specific static sharing metadata and hosting
   for (const project of projects) {
     const html = await readFile(`${output}/projects/${project.id}.html`, 'utf8');
     expect(html).toContain(`<title>${project.title} — Engineering documentation | Mahmoud Metwally</title>`);
-    expect(html).toContain(`property="og:url" content="https://mahmoudmetwall2y.online/projects/${project.id}"`);
+    expect(html).toContain(`property="og:url" content="https://mahmoudmetwall2y.tech/projects/${project.id}"`);
     expect(html).toContain('property="og:type" content="article"');
   }
   expect(await readFile(`${output}/_redirects`, 'utf8')).toContain('/projects/* /index.html 200');
@@ -154,7 +154,7 @@ test('production output has project-specific static sharing metadata and hosting
     for (const project of projects) {
       const response = await fetch(`http://127.0.0.1:${address.port}/projects/${project.id}`);
       expect(response.status).toBe(200);
-      expect(await response.text()).toContain(`property="og:url" content="https://mahmoudmetwall2y.online/projects/${project.id}"`);
+      expect(await response.text()).toContain(`property="og:url" content="https://mahmoudmetwall2y.tech/projects/${project.id}"`);
     }
   } finally { await new Promise<void>((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve())); }
 });

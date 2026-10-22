@@ -39,7 +39,7 @@ export default function ReleaseLab() {
     <div className="release-lab">
       <div className="lab-topline"><span><span className="live-dot" /> THE RELEASE LAB</span><span>release.sh / bash</span></div>
       <div className="lab-title"><h2>A good day in DevOps.</h2><ArrowUpRight size={21} strokeWidth={1.5} /></div>
-      <p className="lab-caption">From a small change to a smooth release.</p>
+      <p className="lab-caption">Portfolio simulation: follow a change through source control, build, deployment, and observability.</p>
       <div className="pipeline" aria-label="Example pipeline: commit, build, deploy, observe">
         <svg className="pipeline-paths" viewBox="0 0 440 270" aria-hidden="true" preserveAspectRatio="none">
           <path className={step > 0 ? 'route route-active' : 'route'} d="M126 65H314" />
@@ -65,7 +65,7 @@ export default function ReleaseLab() {
         <span className="feedback-label">CONTINUOUS FEEDBACK</span>
       </div>
       <div className="lab-terminal">
-        <div className="terminal-heading"><span><Code2 size={13} /> release.log</span><span className="demo-label">INTERACTIVE DEMO</span></div>
+        <div className="terminal-heading"><span><Code2 size={13} /> release.log</span><span className="demo-label">SIMULATION / NO LIVE INFRASTRUCTURE</span></div>
         <div className="terminal-lines" aria-live="polite" aria-atomic="true">
           {logs.length ? logs.map((log, index) => <p key={`${index}-${log}`}><span>›</span> {log}</p>) : <><p><span>$</span> ./make-it-repeatable.sh</p><p className="terminal-hint">A little automation goes a long way.</p></>}
         </div>
