@@ -62,28 +62,17 @@ async function doubleText(page: Page, scope = 'body') {
   });
 }
 
-async function assertSeparatePipelineNodes(page: Page) {
-  const bounds = await page.locator('.pipeline-node').evaluateAll((elements) => elements.map((element) => {
-    const rect = element.getBoundingClientRect();
-    return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
-  }));
-  expect(bounds[0].right).toBeLessThan(bounds[1].left);
-  expect(bounds[0].bottom).toBeLessThan(bounds[2].top);
-  expect(bounds[1].bottom).toBeLessThan(bounds[3].top);
-}
-
 for (const viewport of viewports) {
   test(`${viewport.name}: interface labels, headline, and portrait remain readable`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await ready(page);
     await assertReadable(page);
     const minimumLabelSize = viewport.width <= 700 ? 13 : 12;
-    for (const selector of ['.terminal-chrome', '.identity-command', '.hero-proof > span', '.project-meta', '.tags > span', '.architecture-top', '.toolkit-title small', '.lab-caption', '.pipeline-node small', '.terminal-lines', '.footer-note']) {
+    for (const selector of ['.terminal-chrome', '.identity-command', '.hero-proof > span', '.project-meta', '.tags > span', '.architecture-top', '.toolkit-title small', '.footer-note']) {
       const sizes = await page.locator(selector).evaluateAll((elements) => elements.map((element) => parseFloat(getComputedStyle(element).fontSize)));
       expect(sizes.length).toBeGreaterThan(0);
       expect(Math.min(...sizes), selector).toBeGreaterThanOrEqual(minimumLabelSize);
     }
-    await assertSeparatePipelineNodes(page);
     if (viewport.width <= 700) {
       const photo = await page.locator('.hero-portrait-frame').boundingBox();
       for (const label of await page.locator('.hero-orbit-label').all()) {
@@ -114,21 +103,8 @@ for (const viewport of viewports) {
         await page.addStyleTag({ content: '.portfolio-root * { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } .portfolio-root p { margin-bottom: 2em !important; }' });
       }
       await assertReadable(page);
-      await assertSeparatePipelineNodes(page);
       await page.getByRole('button', { name: /Cloud & infrastructure/ }).click();
       await expect(page.locator('#tool-01')).toBeVisible();
-      await page.getByRole('button', { name: 'Read Space Cargo case study', exact: true }).click();
-      const dialog = page.getByRole('dialog', { name: 'Space Cargo case study' });
-      if (adjustment === 'resize') await doubleText(page, 'dialog');
-      await assertReadable(page, 'dialog');
-      expect(await dialog.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1);
-      await dialog.getByRole('link', { name: 'View full repository' }).scrollIntoViewIfNeeded();
-      await expect(dialog.getByRole('link', { name: 'View full repository' })).toBeVisible();
-      await page.keyboard.press('Escape');
-      // Native dialog close events are asynchronous. Wait for the case study
-      // to unmount and restore focus before issuing a different dialog shortcut.
-      await expect(dialog).not.toBeAttached();
-      await expect(page.getByRole('button', { name: 'Read Space Cargo case study', exact: true })).toBeFocused();
       await page.keyboard.press('Control+k');
       const search = page.getByRole('dialog', { name: 'Search this portfolio' });
       await expect(search).toBeVisible();
@@ -137,10 +113,7 @@ for (const viewport of viewports) {
       await search.getByRole('textbox').fill('contact');
       await search.getByRole('link', { name: 'Get in touch', exact: true }).click();
       await expect(page).toHaveURL(/#contact$/);
-      await page.getByRole('button', { name: 'Run pipeline', exact: true }).click();
-      await expect(page.getByText('RELEASE COMPLETE', { exact: true })).toBeVisible();
-      await assertReadable(page, '.release-lab');
-      expect(await page.locator('.terminal-lines').evaluate((element) => element.scrollHeight <= element.clientHeight + 1)).toBe(true);
+      await expect(page.locator('#contact')).toBeVisible();
     }
   });
 }
@@ -150,7 +123,7 @@ for (const preference of ['reduce', 'no-preference'] as const) {
     await page.emulateMedia({ reducedMotion: preference });
     await page.setViewportSize({ width: 320, height: 700 });
     await ready(page);
-    for (const selector of ['.project-visual-button', '.project-title-button', '.project-actions .project-documentation-link', '.toolkit-row-button', '.lab-bottomline button', '.contact-links button', '.back-to-top']) {
+    for (const selector of ['.project-visual-button', '.project-title-button', '.project-actions .project-documentation-link', '.toolkit-row-button', '.contact-links button', '.back-to-top']) {
       const control = page.locator(selector).first();
       await control.focus();
       await page.keyboard.press('Tab');

@@ -27,54 +27,6 @@ async function accessible(page: Page) {
   expect(violations).toEqual([]);
 }
 
-test('release lab completes every stage and can run again without browser errors', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await ready(page);
-  const run = page.getByRole('button', { name: 'Run pipeline', exact: true });
-  await run.click();
-  await expect(page.getByRole('button', { name: 'Running', exact: true })).toBeDisabled();
-  await expect(page.locator('.pipeline-node.is-active')).toContainText('Commit');
-  for (const next of ['Build', 'Deploy', 'Observe']) {
-    await expect(page.locator('.pipeline-node.is-active')).toContainText(next);
-  }
-  await expect(page.locator('.pipeline-node.is-complete')).toHaveCount(4);
-  await expect(page.getByText('RELEASE COMPLETE', { exact: true })).toBeVisible();
-  await expect(page.locator('.terminal-lines')).toContainText('Metrics connected. Ready for the next change.');
-  await page.getByRole('button', { name: 'Run again', exact: true }).click();
-  await expect(page.locator('.pipeline-node.is-complete')).toHaveCount(0);
-  await expect(page.locator('.pipeline-node.is-active')).toContainText('Commit');
-  await expect(page.getByText('RELEASE COMPLETE', { exact: true })).toBeVisible();
-  expect(errors).toEqual([]);
-});
-
-for (const title of titles) {
-  test(`${title} case study opens, traps focus, and returns focus on Escape`, async ({ page }) => {
-    await ready(page);
-    const trigger = page.getByRole('button', { name: `Read ${title} case study`, exact: true });
-    await trigger.click();
-    const dialog = page.getByRole('dialog', { name: `${title} case study`, exact: true });
-    await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('heading', { name: title, exact: true })).toBeVisible();
-    await expect(dialog.getByText('THE CHALLENGE', { exact: true })).toBeVisible();
-    await expect(dialog.getByText('THE APPROACH', { exact: true })).toBeVisible();
-    const close = dialog.getByRole('button', { name: 'Close case study', exact: true });
-    await expect(close).toBeFocused();
-    await page.keyboard.press('Shift+Tab');
-    // A scrollable native dialog can itself be a browser-provided focus stop.
-    expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
-    await page.keyboard.press('Tab');
-    await expect(close).toBeFocused();
-    await page.keyboard.press('Escape');
-    await expect(dialog).not.toBeVisible();
-    await expect(trigger).toBeFocused();
-    await trigger.click();
-    await page.getByRole('button', { name: 'Close case study', exact: true }).click();
-    await expect(dialog).not.toBeVisible();
-    await expect(trigger).toBeFocused();
-  });
-}
-
 test('project filters show the relevant projects and retain an accurate selected state', async ({ page }) => {
   await ready(page);
   await page.locator('#work').scrollIntoViewIfNeeded();
@@ -113,10 +65,8 @@ test('Control+K search handles empty results, section navigation, and project op
   await expect(search.getByRole('button', { name: /Space Cargo/ })).toBeVisible();
   await expect(search.getByRole('button', { name: /3-Tier User Platform/ })).toBeVisible();
   await search.getByRole('button', { name: /Space Cargo/ }).click();
-  await expect(search).not.toBeVisible();
-  await expect(page.getByRole('dialog', { name: 'Space Cargo case study' })).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page).toHaveURL('/projects/space-cargo');
+  await expect(page.getByRole('heading', { level: 1, name: 'Space Cargo', exact: true })).toBeVisible();
 });
 
 test('toolkit layers expand, replace the previous layer, and collapse', async ({ page }) => {
@@ -155,16 +105,8 @@ test('profile, repository, and contact links point to the intended destinations'
   ];
   for (let index = 0; index < titles.length; index += 1) {
     await expect(page.getByRole('link', { name: `${titles[index]} on GitHub`, exact: true })).toHaveAttribute('href', repos[index]);
-    await page.getByRole('button', { name: `Read ${titles[index]} case study`, exact: true }).click();
-    const dialog = page.getByRole('dialog', { name: `${titles[index]} case study` });
-    await expect(dialog.getByRole('link', { name: 'View full repository' })).toHaveAttribute('href', repos[index]);
-    const evidence = await dialog.locator('.evidence-list a').evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
-    expect(evidence.length).toBeGreaterThanOrEqual(3);
-    expect(evidence.every((url) => {
-      const path = url.slice(repos[index].length);
-      return path.startsWith('/blob/main/') || path.startsWith('/commit/') || path.startsWith('/actions/runs/');
-    })).toBe(true);
-    await page.keyboard.press('Escape');
+    const slug = titles[index] === '3-Tier User Platform' ? 'three-tier' : titles[index] === 'Space Cargo' ? 'space-cargo' : 'ultimate-devops';
+    await expect(page.locator('.project-visual-button').nth(index)).toHaveAttribute('href', `/projects/${slug}`);
   }
 });
 
@@ -189,15 +131,7 @@ for (const width of [320, 390, 768, 1440]) {
       await page.locator(section).scrollIntoViewIfNeeded();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
     }
-    await page.getByRole('button', { name: 'Read Space Cargo case study', exact: true }).click();
-    const dialog = page.getByRole('dialog', { name: 'Space Cargo case study' });
-    await expect(dialog).toBeVisible();
-    const bounds = await dialog.boundingBox();
-    expect(bounds).not.toBeNull();
-    expect(bounds!.x).toBeGreaterThanOrEqual(0);
-    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
-    const innerOverflow = await dialog.evaluate((element) => element.scrollWidth - element.clientWidth);
-    expect(innerOverflow).toBeLessThanOrEqual(1);
+    await expect(page.locator('.project-visual-button').first()).toHaveAttribute('href', /\/projects\//);
   });
 }
 }
@@ -252,13 +186,6 @@ test('CV experience is presented and the original PDF can be downloaded', async 
   const bytes = await response.body();
   expect(bytes.subarray(0, 5).toString()).toBe('%PDF-');
   expect(bytes.length).toBeGreaterThan(50_000);
-});
-
-test('case-study dialog meets WCAG AA automated accessibility checks', async ({ page }) => {
-  await ready(page);
-  await page.getByRole('button', { name: 'Read Space Cargo case study', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Space Cargo case study' })).toBeVisible();
-  await accessible(page);
 });
 
 test('search dialog meets WCAG AA automated accessibility checks', async ({ page }) => {
@@ -346,12 +273,8 @@ test('reduced motion keeps content static, visible, and usable including newly m
   const filters = page.getByRole('group', { name: 'Filter projects' });
   await filters.getByRole('button', { name: /^Cloud/ }).click();
   await filters.getByRole('button', { name: /^Delivery/ }).click();
-  await page.getByRole('button', { name: 'Read Ultimate DevOps case study', exact: true }).click();
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.project-visual-button[href="/projects/ultimate-devops"]')).toHaveCount(1);
   expect(await page.locator('.architecture-art').evaluateAll((elements) => elements.every((element) => (element as SVGSVGElement).animationsPaused()))).toBe(true);
-  await page.keyboard.press('Escape');
-  await expect(dialog).toHaveCount(0);
   expect(await scrollTriggers(page)).toEqual([]);
 });
 
@@ -426,7 +349,7 @@ test('cursor settles without idle style updates and stops on reduced motion', as
   expect(await page.locator('.motion-cursor').getAttribute('data-style-writes')).toBe(reducedWrites);
 });
 
-test('normal motion preserves navigation, search, dialogs, toolkit, and the release demo', async ({ page }) => {
+test('normal motion preserves navigation, search, toolkit, and documentation links', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.setViewportSize({ width: 390, height: 844 });
   await ready(page);
@@ -440,10 +363,6 @@ test('normal motion preserves navigation, search, dialogs, toolkit, and the rele
   const search = page.getByRole('dialog', { name: 'Search this portfolio' });
   await search.getByRole('textbox').fill('ultimate');
   await search.getByRole('button', { name: /Ultimate DevOps/ }).click();
-  await expect(page.getByRole('dialog', { name: 'Ultimate DevOps case study' })).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Run pipeline', exact: true }).click();
-  await expect(page.getByText('RELEASE COMPLETE', { exact: true })).toBeVisible();
-  await expect(page.locator('.pipeline-node.is-complete')).toHaveCount(4);
+  await expect(page).toHaveURL('/projects/ultimate-devops');
+  await expect(page.getByRole('heading', { level: 1, name: 'Ultimate DevOps', exact: true })).toBeVisible();
 });

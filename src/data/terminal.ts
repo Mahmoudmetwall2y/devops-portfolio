@@ -19,7 +19,7 @@ const baseCommands = {
 } as const;
 
 export type PortfolioCommand = keyof typeof baseCommands | `open project ${number}`;
-export const commandDescriptions: Record<PortfolioCommand, string> = { ...baseCommands, ...Object.fromEntries(projects.map((_, index) => [`open project ${index + 1}`, `Open project ${index + 1} case study`])) };
+export const commandDescriptions: Record<PortfolioCommand, string> = { ...baseCommands, ...Object.fromEntries(projects.map((_, index) => [`open project ${index + 1}`, `Open project ${index + 1} documentation`])) };
 export const supportedCommands = Object.keys(commandDescriptions) as PortfolioCommand[];
 export const terminalHistoryLimit = 100;
 export const terminalInputLimit = 1024;

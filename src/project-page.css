@@ -35,7 +35,7 @@
   .doc-contents summary > span { margin-left: auto; color: var(--blue); }
   .doc-contents ol { list-style: none; padding: 0; margin-top: 12px; }
   .doc-contents li + li { margin-top: 4px; }
-  .doc-contents a { display: flex; align-items: baseline; gap: 12px; border-left: 1px solid var(--line); padding: 9px 8px 9px 12px; font-size: 13px; line-height: 1.7; color: var(--muted); overflow-wrap: anywhere; }
+  .doc-contents a { display: flex; align-items: baseline; gap: 12px; min-height: 44px; border-left: 1px solid var(--line); padding: 9px 8px 9px 12px; font-size: 13px; line-height: 1.7; color: var(--muted); overflow-wrap: anywhere; }
   .doc-contents a > span { flex: 0 0 auto; color: var(--muted); font: 12px/1.7 var(--mono); }
   .doc-contents a[aria-current], .doc-contents a:hover { color: var(--accent); border-left-color: var(--accent); background: var(--surface-soft); }
   .doc-side-note { display: flex; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); font: 12px/1.8 var(--mono); color: var(--muted); }

@@ -94,7 +94,6 @@ for (const variant of ['edited', 'empty', 'four-projects'] as const) {
         await expect(page.getByAltText('Uploaded project card fixture')).toBeVisible();
         await page.keyboard.press('Control+k'); await page.getByRole('textbox').fill('Pipeline Operations');
         await page.getByRole('dialog').getByRole('button', { name: /Pipeline Operations/ }).click();
-        await page.getByRole('dialog').getByRole('link', { name: 'Read full project documentation' }).click();
         await expect(page).toHaveURL(`${origin}/projects/pipeline-operations`);
         await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pipeline Operations');
         await expect(page.locator('.doc-subtitle')).toHaveText('Updated documentation fixture');
@@ -103,7 +102,7 @@ for (const variant of ['edited', 'empty', 'four-projects'] as const) {
       } else {
         await page.getByRole('button', { name: 'Open Terminal', exact: true }).click();
         const input = page.getByRole('textbox', { name: 'Terminal command' });
-        if (variant === 'four-projects') { await input.fill('open project 4'); await input.press('Enter'); await expect(page.getByRole('dialog', { name: 'Fourth Project case study' })).toBeVisible(); }
+        if (variant === 'four-projects') { await input.fill('open project 4'); await input.press('Enter'); await expect(page).toHaveURL(`${origin}/projects/fourth-project`); await expect(page.getByRole('heading', { level: 1, name: 'Fourth Project', exact: true })).toBeVisible(); }
         else { await input.fill('open project 1'); await input.press('Enter'); await expect(page.locator('.portfolio-terminal-entry').last()).toContainText('There are no projects to open yet.'); await page.keyboard.press('Escape'); await expect(page.locator('.projects-empty')).toBeVisible(); }
       }
       expect(errors).toEqual([]);

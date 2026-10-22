@@ -60,7 +60,7 @@ test('help, identity, files, biography, experience, and toolkit use portfolio co
   }
 });
 
-test('both project-list commands show all three real projects and allow case-study navigation', async ({ page }) => {
+test('both project-list commands show all three real projects and link to documentation', async ({ page }) => {
   const dialog = await openTerminal(page);
   for (const input of ['projects', 'ls projects']) {
     await command(page, input);
@@ -68,26 +68,19 @@ test('both project-list commands show all three real projects and allow case-stu
     await expect(reply.getByRole('button')).toHaveText(['01 / 3-Tier User Platform', '02 / Space Cargo', '03 / Ultimate DevOps']);
     await expect(reply).toContainText('security scanning, container builds');
   }
-  await dialog.locator('.portfolio-terminal-reply').last().getByRole('button', { name: 'Open Space Cargo case study' }).click();
-  await expect(page.getByRole('dialog', { name: 'Space Cargo case study' })).toBeVisible();
-  await expect(page.locator('dialog[open]')).toHaveCount(1);
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', { name: 'Open Terminal', exact: true })).toBeFocused();
+  await expect(dialog.locator('.portfolio-terminal-reply').last().getByRole('button', { name: 'Open Space Cargo documentation' })).toHaveAttribute('aria-label', 'Open Space Cargo documentation');
+  await dialog.locator('.portfolio-terminal-reply').last().getByRole('button', { name: 'Open Space Cargo documentation' }).click();
+  await expect(page).toHaveURL('/projects/space-cargo');
+  await expect(page.getByRole('heading', { level: 1, name: 'Space Cargo', exact: true })).toBeVisible();
 });
 
 for (const [index, title] of ['3-Tier User Platform', 'Space Cargo', 'Ultimate DevOps'].entries()) {
-  test(`open project ${index + 1} uses the accessible ${title} case study`, async ({ page }) => {
+  test(`open project ${index + 1} opens ${title} documentation`, async ({ page }) => {
     await openTerminal(page);
     await command(page, `open project ${index + 1}`);
-    const project = page.getByRole('dialog', { name: `${title} case study` });
-    await expect(project.getByRole('heading', { name: title, exact: true })).toBeVisible();
-    await expect(project.getByRole('button', { name: 'Close case study' })).toBeFocused();
-    await expect(page.locator('dialog[open]')).toHaveCount(1);
-    await page.keyboard.press('Escape');
-    await expect(page.getByRole('button', { name: 'Open Terminal', exact: true })).toBeFocused();
-    await page.getByRole('button', { name: 'Open Terminal', exact: true }).click();
-    await expect(page.getByRole('textbox', { name: 'Terminal command' })).toBeFocused();
-    await expect(page.locator('.portfolio-terminal-entry').last()).toContainText(`Opened the ${title} case study.`);
+    const slug = index === 0 ? 'three-tier' : index === 1 ? 'space-cargo' : 'ultimate-devops';
+    await expect(page).toHaveURL(`/projects/${slug}`);
+    await expect(page.getByRole('heading', { level: 1, name: title, exact: true })).toBeVisible();
   });
 }
 
@@ -184,7 +177,7 @@ test('Control+K switches to the existing search without stacking dialogs', async
   await expect(page.locator('dialog[open]')).toHaveCount(1);
   await search.getByRole('textbox').fill('Space Cargo');
   await search.getByRole('button', { name: /Space Cargo/ }).click();
-  await expect(page.getByRole('dialog', { name: 'Space Cargo case study' })).toBeVisible();
+  await expect(page).toHaveURL('/projects/space-cargo');
 });
 
 for (const preference of ['reduce', 'no-preference'] as const) {
@@ -214,11 +207,7 @@ for (const width of [390, 320]) {
     const output = dialog.getByRole('region', { name: 'Terminal output' });
     expect(await output.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
     await output.evaluate((element) => { element.scrollTop = element.scrollHeight; });
-    await dialog.getByRole('button', { name: 'Open Ultimate DevOps case study' }).click();
-    await expect(page.getByRole('dialog', { name: 'Ultimate DevOps case study' })).toBeVisible();
-    await page.keyboard.press('Escape');
-    await page.getByRole('button', { name: 'Open Terminal', exact: true }).click();
-    await command(page, 'help');
+    await expect(dialog.getByRole('button', { name: 'Open Ultimate DevOps documentation' })).toHaveAttribute('aria-label', 'Open Ultimate DevOps documentation');
     for (const name of ['Close terminal', 'Run command']) {
       const button = dialog.getByRole('button', { name, exact: true });
       const bounds = await button.boundingBox();

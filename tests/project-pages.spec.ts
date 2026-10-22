@@ -64,19 +64,15 @@ for (const project of projects) for (const preference of ['reduce', 'no-preferen
   });
 }
 
-test('cards link to each dedicated article and retain accessible quick previews', async ({ page }) => {
+test('every project card opens its dedicated documentation article', async ({ page }) => {
   for (const project of projects) {
     await page.goto('/');
     const card = page.locator('.project-card').filter({ has: page.getByRole('heading', { name: project.title, exact: true }) });
     await expect(card.getByRole('link', { name: 'Read documentation' })).toHaveAttribute('href', `/projects/${project.id}`);
+    await expect(card.getByRole('link', { name: `Read ${project.title} documentation`, exact: true })).toHaveAttribute('href', `/projects/${project.id}`);
     await card.getByRole('link', { name: project.title, exact: true }).click();
     await expect(page.getByRole('heading', { level: 1, name: project.title, exact: true })).toBeVisible();
-    await page.goBack();
-    await page.getByRole('button', { name: `Read ${project.title} case study`, exact: true }).click();
-    const dialog = page.getByRole('dialog');
-    await dialog.getByRole('link', { name: 'Read full project documentation', exact: true }).click();
     await expect(page).toHaveURL(`/projects/${project.id}`);
-    await page.goBack();
   }
 });
 
